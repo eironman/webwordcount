@@ -1,7 +1,8 @@
-.hidden{
-	display: none;
+#form-count{
 }
-#container {
-  width: 990px;
-  margin: 25px auto;
+#form-count label{
+	color: #999;
+}
+.form-group{
+	margin-right: 5px;
 }

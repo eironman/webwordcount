@@ -1,15 +1,36 @@
 extends layout
 
-
 block content
 
-	form(method='post', action='/', id='form-count')
-		fieldset
-			label(for='url') http://
-			input(type='text', value='www.buscapista.es', id='url')
-			input(type='submit', value='count')
-			img#loading.hidden(src="/img/loading.gif")
-	ul#result
+	div.container-fluid
+		div.row
+			div(class='col-sm-3 col-md-2 sidebar')
+				ul#urls-requested(class='nav nav-sidebar')
+					//li.active
+						a(href='#') -
+						
+		div(class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main')
+			h1.page-header Word count
 
-	script(src="/js/jquery-1.8.3.js")
-	script(src="/js/view.index.js")
+			//div(class='row placeholders')
+				div(class='col-xs-6 col-sm-3 placeholder')
+					h4 Label
+					span.text-muted Something else
+					
+				div(class='col-xs-6 col-sm-3 placeholder')
+					h4 Label
+					span.text-muted Something else
+
+			//h2.sub-header Next
+			div.table-responsive
+				table#result(class='table table-striped')
+					thead
+						tr
+							th Word
+							th Appearances
+					tbody
+						tr
+							td -
+							td -
+							
+	script(src='/js/view.index.js')

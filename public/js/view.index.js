@@ -2,28 +2,34 @@ $(function(){
 	$("#form-count").on('submit', function(e){
 		e.preventDefault();
 		
-		// Reset list
-		$("#result").html('');
-		
-		// Show loading
-		$("#loading").toggleClass('hidden');
-		
-		// Do the request to count words
-		$.ajax({
-			url: '/count/' + $("#url").val()
-		}).done(function(words){
+		var url = $("#url").val();
+		if ( url != '' ){
 			
-			// Hide loading
+			// Show loading
 			$("#loading").toggleClass('hidden');
 			
-			// Show result
-			$(words).each(function(index){
-				$("#result").append('<li>' + words[index].w + ': ' + words[index].c + '</li>')
+			// Reset list
+			$("#result tbody").html('');
+			$("#urls-requested").html('');
+			
+			// Add requestd url
+			$("#urls-requested").append('<li class="active"><a href="">' + url + '</a></li>')
+			
+			// Do the request to count words
+			$.ajax({
+				url: '/count/' + url
+			}).done(function(words){
+				
+				// Show result
+				$("#loading").toggleClass('hidden');
+				$(words).each(function(index){
+					$("#result tbody").append('<tr><td>' + words[index].w + '</td><td>' + words[index].c + '</td></tr>')
+				});
+				
+			}).error(function(){
+				$("#loading").toggleClass('hidden');
+				$("#result tbody").append('<tr><td>-</td><td>-</td></tr>')
 			});
-			
-		}).error(function(){
-			// Hide loading
-			$("#loading").toggleClass('hidden');
-		});
+		}
 	});
 });
