@@ -1,0 +1,15 @@
+extends layout
+
+
+block content
+
+	form(method='post', action='/', id='form-count')
+		fieldset
+			label(for='url') http://
+			input(type='text', value='www.buscapista.es', id='url')
+			input(type='submit', value='count')
+			img#loading.hidden(src="/img/loading.gif")
+	ul#result
+
+	script(src="/js/jquery-1.8.3.js")
+	script(src="/js/view.index.js")
