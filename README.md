@@ -1,4 +1,4 @@
-wordcount
+Webwordcount
 =========
 
 Application to count words in a web.
