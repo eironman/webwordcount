@@ -31,7 +31,7 @@ html
 						span.icon-bar
 						span.icon-bar
 						span.icon-bar
-					a.navbar-brand(href='#') Web Word Count
+					a.navbar-brand(href='/') Web Word Count
 					
 				div(class='navbar-collapse collapse')
 					form(method='post', action='/', id='form-count', class='navbar-form navbar-left')
@@ -39,18 +39,23 @@ html
 							label(for='url') http://&nbsp;
 							input(type='text' class='form-control' placeholder='url' id='url')
 						input(type='submit' value='Count' class='btn btn-default')
-						
-					//ul(class='nav navbar-nav navbar-right')
-						li
-							a(href='#') Dashboard
-						li 
-							a(href='#') Settings
-						li 
-							a(href='#') Profile
-						li 
-							a(href='#') Help
+					
+					ul(class='nav navbar-nav')
+						li.dropdown
+							a.dropdown-toggle(data-toggle='dropdown' role='button' href='javascript:void(0)') 
+								span Words > 2 letters 
+								b.caret
+							ul.dropdown-menu(role='menu')
+								li(role='presentation' id='no-filter')
+									a(href='javascript:void(0)' tabindex='-1' role='menuitem') Do not filter 
+								li(role='presentation' id='filter-one')
+									a(href='javascript:void(0)' tabindex='-1' role='menuitem') Words > 1 letter 
+								li(role='presentation' class='disabled' id='filter-two')
+									a(href='javascript:void(0)' tabindex='-1' role='menuitem') Words > 2 letters 
+								li(role='presentation' id='filter-three')
+									a(href='javascript:void(0)' tabindex='-1' role='menuitem') Words > 3 letters 
 						
 		block content
 
 		script(src='/js/bootstrap.min.js')
-		//script(src='/js/docs.min.js')
+		//- script(src='/js/docs.min.js')

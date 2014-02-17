@@ -70,7 +70,7 @@ function docount(data){
 	var wordcount = [];
 	
 	// Remove tags, parenthesis, carriage return, tabs, commas, points, ...
-	data = data.replace(/(<(?:.|\n)*?>)|([\n\r\t\;(\),\.:\[\]\{\}=\?¿]+)/g, ' ');
+	data = data.replace(/(<(?:.|\n)*?>)|([\n\r\t\;(\),\.:\[\]\{\}=\?¿\"#]+)|(&nbsp)/g, ' ');
 	
 	// Remove extra whitespaces
 	data = data.replace(/( +)/g, ' ').trim();

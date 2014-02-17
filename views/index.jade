@@ -6,34 +6,26 @@ block content
 		div.row
 			div(class='col-sm-3 col-md-2 sidebar')
 				ul#urls-requested(class='nav nav-sidebar')
-					//li.active
-						a(href='#') -
-							&nbsp;
-							img#loading(src='/img/loading.gif')
+				//- li.active
+					a(href='#') -
+						&nbsp;
+						img#loading(src='/img/loading.gif')
 						
 		div(class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main')
-			h1.page-header Word count
+			h1.page-header Word count: 
+				span -
 
 			div(class='row placeholders')
 				div(class='col-xs-6 col-sm-3 placeholder graphic typea')
-					//img(data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail")
-					//div 50
-					//h4 Palabra
-					//span.text-muted Something else
+				//- img(data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail")
+					div 50
+					h4 Palabra
+					span.text-muted Something else
 				div(class='col-xs-6 col-sm-3 placeholder graphic typeb')
-					//div 40
-					//h4 Palabra
-					//span.text-muted Something else
 				div(class='col-xs-6 col-sm-3 placeholder graphic typec')
-					//div 30
-					//h4 Palabra
-					//span.text-muted Something else
 				div(class='col-xs-6 col-sm-3 placeholder graphic typed')
-					//div.graphic.typed 20
-					//h4 Palabra
-					//span.text-muted Something else
 					
-			//h2.sub-header Next
+			//- h2.sub-header Next
 			div.table-responsive
 				table#result(class='table table-striped')
 					thead
