@@ -5,15 +5,14 @@ $(function(){
 		var url = $("#url").val();
 		if ( url != '' ){
 			
-			// Show loading
-			$("#loading").toggleClass('hidden');
-			
 			// Reset list
 			$("#result tbody").html('');
 			$("#urls-requested").html('');
+			$('.graphic').html('');
 			
-			// Add requestd url
-			$("#urls-requested").append('<li class="active"><a href="">' + url + '</a></li>')
+			// Add requeste	d url
+			$("#urls-requested").append('<li class="active"><a href="">' + url + 
+										' <img src="/img/loading.gif" id="loading"></a></li>')
 			
 			// Do the request to count words
 			$.ajax({
@@ -21,13 +20,29 @@ $(function(){
 			}).done(function(words){
 				
 				// Show result
-				$("#loading").toggleClass('hidden');
+				$("#loading").remove();
 				$(words).each(function(index){
-					$("#result tbody").append('<tr><td>' + words[index].w + '</td><td>' + words[index].c + '</td></tr>')
+					
+					if (index == 0) {
+						$('.graphic.typea').append('<div>' + words[index].c + '</div>')
+						$('.graphic.typea').append('<h4>' + words[index].w + '</h4>')
+					} else if (index == 1){
+						$('.graphic.typeb').append('<div>' + words[index].c + '</div>')
+						$('.graphic.typeb').append('<h4>' + words[index].w + '</h4>')
+					} else if (index == 2){
+						$('.graphic.typec').append('<div>' + words[index].c + '</div>')
+						$('.graphic.typec').append('<h4>' + words[index].w + '</h4>')
+					} else if (index == 3){
+						$('.graphic.typed').append('<div>' + words[index].c + '</div>')
+						$('.graphic.typed').append('<h4>' + words[index].w + '</h4>')
+					} else {
+						$("#result tbody").append('<tr><td>' + words[index].w + '</td><td>' +
+													words[index].c + '</td></tr>')
+					}
 				});
 				
 			}).error(function(){
-				$("#loading").toggleClass('hidden');
+				$("#loading").remove();
 				$("#result tbody").append('<tr><td>-</td><td>-</td></tr>')
 			});
 		}
