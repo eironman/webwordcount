@@ -69,11 +69,14 @@ function docount(data){
 	var words, wordobj;
 	var wordcount = [];
 	
-	// Remove tags, parenthesis, carriage return, tabs, commas, points, ...
-	data = data.replace(/(<(?:.|\n)*?>)|([\n\r\t\;(\),\.:\[\]\{\}=\?¿\"#]+)|(&nbsp)/g, ' ');
+	// Remove js code
+	data = data.replace(/<script([\s\S]+?)\/script>/g, ' ');
 	
-	// Remove extra whitespaces
-	data = data.replace(/( +)/g, ' ').trim();
+	// Remove tags, parenthesis, commas, points, ...
+	data = data.replace(/(<([\s\S]+?)>)|([\;(\),\.:\[\]\{\}=\?¿\"#]+)|(&nbsp)/g, ' ');
+	
+	// Remove whitespaces, tabs and line breaks
+	data = data.replace(/(\s+)/g, ' ').trim();
 	
 	// Array of words
 	words = data.split(' ');
