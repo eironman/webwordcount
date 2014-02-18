@@ -5,12 +5,13 @@ $(function(){
 		$('ul.dropdown-menu > li.disabled').removeClass('disabled');
 		$(this).addClass('disabled');
 		$('li.dropdown > a > span').html($(this).children('a').html());
+		$("#form-count").submit();
 	})
 	
 	// Request form
 	$("#form-count").on('submit', function(e){
 		e.preventDefault();
-		
+		console.info('uep');
 		var url = $("#url").val();
 		if ( url != '' ){
 			

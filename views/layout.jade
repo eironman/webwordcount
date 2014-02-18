@@ -4,7 +4,7 @@ html
 		meta(charset='utf-8')
 		meta(http-equiv='X-UA-Compatible' content='IE=edge')
 		meta(name='viewport' content='width=device-width, initial-scale=1')
-		meta(name='description' content='Count the words in a web')
+		meta(name='description' content='Count the words in a web, separated by title, description, keywords and more.')
 		meta(name='author' content='Aaron Amengual Arranz')
 		
 		title= title
@@ -31,13 +31,14 @@ html
 						span.icon-bar
 						span.icon-bar
 						span.icon-bar
-					a.navbar-brand(href='/') Web Word Count
+					h1
+						a.navbar-brand(href='/') Word Web Count
 					
 				div(class='navbar-collapse collapse')
 					form(method='post', action='/', id='form-count', class='navbar-form navbar-left')
 						.form-group
 							label(for='url') http://&nbsp;
-							input(type='text' class='form-control' placeholder='url' id='url')
+							input(type='text' class='form-control' placeholder='www.website.com' id='url')
 						input(type='submit' value='Count' class='btn btn-default')
 					
 					ul(class='nav navbar-nav')

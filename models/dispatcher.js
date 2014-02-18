@@ -6,7 +6,7 @@
  * @param res
  */
 function index(req, res, err){
-	res.render('index', {title: 'Portada word count'});
+	res.render('index', {title: 'Count the words in a web | wordwebcount.com'});
 }
 
 /**
