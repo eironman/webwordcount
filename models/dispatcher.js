@@ -17,7 +17,7 @@ function index(req, res, err){
 function count(req, res, err){
 	
 	var http = require('http');
-	var data, count;
+	var wordlist = [], data = '';
 
 	var options = {
 	  host: req.params.url
@@ -26,16 +26,14 @@ function count(req, res, err){
 	// Do the request
 	http.request(options, function(response) {
 		
-		data = '';
-		
 		// Save data received
 		response.on('data', function (chunk) {
 			data += chunk;
 		});
 
 		response.on('end', function () {
-			count = docount(data.toString());
-			res.json(count);
+			wordlist = docount(data.toString(), wordlist);
+			res.json(wordlist);
 		});
 		
 	}).end();
@@ -58,49 +56,115 @@ exports.badrequest = badrequest;
 
 // UTILS
 
+var _ = require('underscore');
+
 /**
  * Does the word count
  * @param string data
+ * @param Array wordlist
  * @returns {Array}
  */
-function docount(data){
+function docount(data, wordlist){
 	
-	var _ = require('underscore');
-	var words, wordobj;
-	var wordcount = [];
+	var arr;
 	
-	// Remove js code
+	// Header data: title, description, keywords
+	
+	// Page title
+	arr = (/<title>(.+?)<\/title>/g).exec(data);
+	if (arr !== null) {
+		wordlist = updatecount(arr[1], wordlist, 'ptitle');
+	}
+	
+	// Description
+	var descriptionRegexp = /name="keywords".+?content="([^"]+)"/g;
+	while ((arr = descriptionRegexp.exec(data)) !== null){
+		wordlist = updatecount(arr[1], wordlist, 'desc');
+	}
+	
+	// Keywords
+	var keywordsRegexp = /name="description".+?content="([^"]+)"/g;
+	while ((arr = keywordsRegexp.exec(data)) !== null){
+		wordlist = updatecount(arr[1], wordlist, 'keyw');
+	}
+	
+	// Remove tags
+	data = data.replace(/<head>[\s\S]+<\/head>/g, ' ');
 	data = data.replace(/<script([\s\S]+?)\/script>/g, ' ');
+	data = data.replace(/<([\s\S]+?)>/g, ' ');
 	
-	// Remove tags, parenthesis, commas, points, ...
-	data = data.replace(/(<([\s\S]+?)>)|([\;(\),\.:\[\]\{\}=\?¿\"#]+)|(&nbsp)/g, ' ');
+	// Count words in text
+	wordlist = updatecount(data, wordlist);
 	
-	// Remove whitespaces, tabs and line breaks
-	data = data.replace(/(\s+)/g, ' ').trim();
+	// Sort array
+	wordlist = _(wordlist).sortBy(function(word){
+		return word.c;
+	}).reverse();
+	
+	return wordlist;
+}
+
+/**
+ * Updates the count
+ * @param data
+ * @param wordlist
+ * @param type: text, title, description, ...
+ */
+function updatecount(data, wordlist, type){
+	
+	type = type || 'text';
+	var wordobj;
+
+	// Remove parenthesis, commas, points, ...
+	data = data.replace(/([\;(\),\.:\[\]\{\}=\?¿\"#]+)|(&nbsp)/g, ' ');
+	
+	// Remove extra whitespaces, tabs and line breaks
+	data = data.toLowerCase().replace(/(\s+)/g, ' ').trim();
 	
 	// Array of words
-	words = data.split(' ');
+	data = data.split(' ');
 	
 	// Count words
-	_(words).each(function(word){
+	_(data).each(function(word){
 		
 		// Find word in array
-		wordobj = _(wordcount).find(function(ob){
+		wordobj = _(wordlist).find(function(ob){
 			return ob.w == word;
 		});
 		
 		// Add word or update count
 		if ( typeof wordobj=="undefined" ){
-			wordcount.push({w : word, c : 1});
+			
+			wordlist.push({
+				w		: word,
+				c		: 1,	// Total count
+				text	: type == 'text' ? 1 : 0,
+				ptitle	: type == 'ptitle' ? 1 : 0,
+				titles	: type == 'titles' ? 1 : 0,
+				desc	: type == 'desc' ? 1 : 0,
+				keyw	: type == 'keyw' ? 1 : 0
+			});
+			
 		} else {
-			wordobj.c++
+			
+			// Update total count
+			wordobj.c++;
+			
+			if (type == 'text') {
+				wordobj.text++;
+			} else if (type == 'ptitle') {
+				wordobj.ptitle++;
+			} else if (type == 'titles') {
+				wordobj.titles++;
+			} else if (type == 'desc') {
+				wordobj.desc++;
+			} else if (type == 'keyw') {
+				wordobj.keyw++;
+			}
 		}
 	});
 	
-	// Sort array
-	wordcount = _(wordcount).sortBy(function(word){
-		return word.c;
-	}).reverse();
-	
-	return wordcount;
+	return wordlist;
 }
+
+

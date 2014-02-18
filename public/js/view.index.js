@@ -45,22 +45,17 @@ $(function(){
 				$(words).each(function(index){
 					
 					if (words[index].w.length > length) {
-						if (count == 0) {
-							$('.graphic.typea').append('<div>' + words[index].c + '</div>' +
-														'<h4>' + words[index].w + '</h4>')
-						} else if (count == 1){
-							$('.graphic.typeb').append('<div>' + words[index].c + '</div>' +
-														'<h4>' + words[index].w + '</h4>')
-						} else if (count == 2){
-							$('.graphic.typec').append('<div>' + words[index].c + '</div>' +
-														'<h4>' + words[index].w + '</h4>')
-						} else if (count == 3){
-							$('.graphic.typed').append('<div>' + words[index].c + '</div>' +
-														'<h4>' + words[index].w + '</h4>')
-						} else {
-							$("#result tbody").append('<tr><td>' + words[index].w + '</td><td>' +
-														words[index].c + '</td></tr>')
-						}
+						
+						$("#result tbody").append(
+							'<tr>' +
+							'<td>' + words[index].w + '</td>' +
+							'<td>' + words[index].c + '</td>' +
+							'<td>' + words[index].text + '</td>' +
+							'<td>' + words[index].ptitle + '</td>' +
+							//'<td>' + words[index].titles + '</td>' +
+							'<td>' + words[index].desc + '</td>' +
+							'<td>' + words[index].keyw + '</td>' +
+							'</tr>')
 						count++;
 					}
 				});
@@ -78,7 +73,7 @@ $(function(){
  * Resets the results
  */
 function resetResult(){
-	$("#result tbody").html('<tr><td>-</td><td>-</td></tr>')
+	$("#result tbody").html('<tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>')
 	$("#urls-requested").html('');
 	$('.graphic').html('');
 	$('.page-header > span').html('-');
