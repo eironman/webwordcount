@@ -7,3 +7,14 @@
 .form-group{
 	margin-right: 5px;
 }
+#result th{
+	padding: 8px 0px 8px 20px;
+	cursor: pointer;
+	background: url(/img/bg.gif) left center no-repeat;
+}
+#result th.sorttable_sorted{
+	background: url(/img/asc.gif) left center no-repeat;
+}
+#result th.sorttable_sorted_reverse{
+	background: url(/img/desc.gif) left center no-repeat;
+}

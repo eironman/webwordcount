@@ -13,7 +13,7 @@ block content
 						
 		div(class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main')
 			h2.page-header Word count: 
-				span -
+				span 0
 
 			//- div(class='row placeholders')
 				div(class='col-xs-6 col-sm-3 placeholder graphic typea')
@@ -27,24 +27,25 @@ block content
 
 			//- h2.sub-header Next
 			div.table-responsive
-				table#result(class='table table-striped')
+				table#result(class='sortable table table-striped')
 					thead
 						tr
 							th Word
 							th Total
-							th Text
+							th Regular text
 							th Page title
-							//th Attribute title
-							th Description tag
-							th Keywords tag
+							th Description
+							th Keywords
+							//th Attribute headings
 					tbody
 						tr
 							td -
-							td -
-							td -
-							td -
+							td 0
+							td 0
+							td 0
+							td 0
+							td 0
 							//td -
-							td -
-							td -
+					div#pager
 							
 	script(src='/js/view.index.js')

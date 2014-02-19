@@ -11,7 +11,7 @@ $(function(){
 	// Request form
 	$("#form-count").on('submit', function(e){
 		e.preventDefault();
-		console.info('uep');
+		
 		var url = $("#url").val();
 		if ( url != '' ){
 			
@@ -26,6 +26,7 @@ $(function(){
 				url: '/count/' + url
 			}).done(function(words){
 				
+				$("#result tbody").html('');
 				var count=0, length=0;
 				
 				// Length filter
@@ -49,13 +50,13 @@ $(function(){
 						
 						$("#result tbody").append(
 							'<tr>' +
-							'<td>' + words[index].w + '</td>' +
-							'<td>' + words[index].c + '</td>' +
-							'<td>' + words[index].text + '</td>' +
-							'<td>' + words[index].ptitle + '</td>' +
-							//'<td>' + words[index].titles + '</td>' +
-							'<td>' + words[index].desc + '</td>' +
-							'<td>' + words[index].keyw + '</td>' +
+								'<td>' + words[index].w + '</td>' +
+								'<td>' + words[index].c + '</td>' +
+								'<td>' + words[index].text + '</td>' +
+								'<td>' + words[index].ptitle + '</td>' +
+								'<td>' + words[index].desc + '</td>' +
+								'<td>' + words[index].keyw + '</td>' +
+								//'<td>' + words[index].headings + '</td>' +
 							'</tr>')
 						count++;
 					}
@@ -64,7 +65,6 @@ $(function(){
 				
 			}).error(function(){
 				$("#loading").remove();
-				resetResult();
 			});
 		}
 	});
@@ -74,10 +74,11 @@ $(function(){
  * Resets the results
  */
 function resetResult(){
-	$("#result tbody").html('<tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>')
+	$("#result th").removeClass('sorttable_sorted sorttable_sorted_reverse');
+	$("#result tbody").html(
+		'<tr><td>-</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>');
 	$("#urls-requested").html('');
-	$('.graphic').html('');
-	$('.page-header > span').html('-');
+	$('.page-header > span').html(0);
 }
 
 
