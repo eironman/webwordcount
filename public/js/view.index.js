@@ -13,7 +13,10 @@ $(function(){
 		e.preventDefault();
 		
 		var url = $("#url").val();
-		if ( url != '' ){
+		var urlRegexp = /^(?:https?:\/\/)?(?:[\w]+\.)([a-zA-Z\.]{2,6})([\/\w\.-]*)*\/?$/;
+		
+		// Validate url
+		if ( url != '' && urlRegexp.test(url) ){
 			
 			resetResult();
 			
@@ -27,7 +30,7 @@ $(function(){
 			}).done(function(words){
 				
 				$("#result tbody").html('');
-				var count=0, length=0;
+				var count=0, length=0, headings=0;
 				
 				// Length filter
 				var filter = $('ul.dropdown-menu > li.disabled').attr('id');
@@ -56,7 +59,7 @@ $(function(){
 								'<td>' + words[index].ptitle + '</td>' +
 								'<td>' + words[index].desc + '</td>' +
 								'<td>' + words[index].keyw + '</td>' +
-								//'<td>' + words[index].headings + '</td>' +
+								'<td>' + headings + '</td>' +
 							'</tr>')
 						count++;
 					}
@@ -76,7 +79,7 @@ $(function(){
 function resetResult(){
 	$("#result th").removeClass('sorttable_sorted sorttable_sorted_reverse');
 	$("#result tbody").html(
-		'<tr><td>-</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>');
+		'<tr><td>-</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>');
 	$("#urls-requested").html('');
 	$('.page-header > span').html(0);
 }

@@ -6,7 +6,7 @@
  * @param res
  */
 function index(req, res, err){
-	res.render('index', {title: 'Count the words in a web | wordwebcount.com'});
+	res.render('index', {title: 'Count words in a web | wordwebcount.com'});
 }
 
 /**
@@ -19,8 +19,9 @@ function count(req, res, err){
 	var http = require('http');
 	var wordlist = [], data = '';
 
+	var url = req.params[0];
 	var options = {
-	  host: req.params.url
+	  host: url
 	};
 
 	// Do the request
@@ -32,10 +33,14 @@ function count(req, res, err){
 		});
 
 		response.on('end', function () {
+			console.log('[OK] Request to: ' + url);
 			wordlist = docount(data.toString(), wordlist);
 			res.json(wordlist);
 		});
 		
+	}).on('error', function(e){
+		console.log('[ERROR] Request to: ' + url + ' Error: '+ e.message);
+		res.send('Error');
 	}).end();
 }
 
@@ -66,32 +71,17 @@ var _ = require('underscore');
  */
 function docount(data, wordlist){
 	
-	var arr;
-	
-	// Header data: title, description, keywords
-	
-	// Page title
-	arr = (/<title>(.+?)<\/title>/g).exec(data);
-	if (arr !== null) {
-		wordlist = updatecount(arr[1], wordlist, 'ptitle');
-	}
-	
-	// Description
-	var descriptionRegexp = /name="keywords".+?content="([^"]+)"/g;
-	while ((arr = descriptionRegexp.exec(data)) !== null){
-		wordlist = updatecount(arr[1], wordlist, 'desc');
-	}
-	
-	// Keywords
-	var keywordsRegexp = /name="description".+?content="([^"]+)"/g;
-	while ((arr = keywordsRegexp.exec(data)) !== null){
-		wordlist = updatecount(arr[1], wordlist, 'keyw');
-	}
-	
-	// Remove tags
-	data = data.replace(/<head>[\s\S]+<\/head>/g, ' ');
+	// Remove js code
 	data = data.replace(/<script([\s\S]+?)\/script>/g, ' ');
-	data = data.replace(/<([\s\S]+?)>/g, ' ');
+	
+	// Extract header words: title, description, keywords
+	extractHeaderData(data, wordlist);
+	
+	// Remove header
+	data = data.replace(/<head>[\s\S]+<\/head>/g, ' ');
+	
+	// Extract headings words
+	extractHeadingData(data, wordlist);
 	
 	// Count words in text
 	wordlist = updatecount(data, wordlist);
@@ -102,6 +92,61 @@ function docount(data, wordlist){
 	}).reverse();
 	
 	return wordlist;
+}
+
+/**
+ * Extracts words from heading tags
+ * @param data
+ * @param wordlist
+ */
+function extractHeadingData(data, wordlist){
+	
+	// h1. Good practices ask for only one h1, but there can be more
+	var regexp = /<h1>([\s\S]+?)<\/h1>/g;
+	while ((arr = regexp.exec(data)) !== null){
+		wordlist = updatecount(arr[1], wordlist, 'h1');
+	}
+	data = data.replace(/<h1>[\s\S]+?<\/h1>/g, ' ');
+	
+	// h2
+	var regexp = /<h2>([\s\S]+?)<\/h2>/g;
+	while ((arr = regexp.exec(data)) !== null){
+		wordlist = updatecount(arr[1], wordlist, 'h2');
+	}
+	data = data.replace(/<h2>[\s\S]+?<\/h2>/g, ' ');
+	
+}
+
+/**
+ * Extracts words from header tags title, description and keywords
+ * @param data
+ * @param wordlist
+ */
+function extractHeaderData(data, wordlist){
+	
+	var header = (/<head>([\s\S]+)<\/head>/).exec(data)
+	var arr;
+	
+	if (header !== null){
+		
+		// Page title
+		arr = (/<title>(.+?)<\/title>/g).exec(header);
+		if (arr !== null) {
+			wordlist = updatecount(arr[1], wordlist, 'ptitle');
+		}
+		
+		// Description. There can be several description tags for different languages
+		var descriptionRegexp = /name="keywords".+?content="([^"]+)"/g;
+		while ((arr = descriptionRegexp.exec(header)) !== null){
+			wordlist = updatecount(arr[1], wordlist, 'desc');
+		}
+		
+		// Keywords. There can be several keyword tags for different languages
+		var keywordsRegexp = /name="description".+?content="([^"]+)"/g;
+		while ((arr = keywordsRegexp.exec(header)) !== null){
+			wordlist = updatecount(arr[1], wordlist, 'keyw');
+		}
+	}
 }
 
 /**
@@ -117,6 +162,9 @@ function updatecount(data, wordlist, type){
 
 	// Remove parenthesis, commas, points, ...
 	data = data.replace(/([\;(\),\.:\[\]\{\}=\?¿\"#]+)|(&nbsp)/g, ' ');
+
+	// Remove tags
+	data = data.replace(/<[\s\S]+?>/g, ' ');
 	
 	// Remove extra whitespaces, tabs and line breaks
 	data = data.toLowerCase().replace(/(\s+)/g, ' ').trim();
@@ -140,9 +188,17 @@ function updatecount(data, wordlist, type){
 				c		: 1,	// Total count
 				text	: type == 'text' ? 1 : 0,
 				ptitle	: type == 'ptitle' ? 1 : 0,
-				titles	: type == 'titles' ? 1 : 0,
+				titles	: type == 'titles' ? 1 : 0,	// Tags title attribute
+				alt		: type == 'alt' ? 1 : 0,	// Img alt attribute
 				desc	: type == 'desc' ? 1 : 0,
-				keyw	: type == 'keyw' ? 1 : 0
+				keyw	: type == 'keyw' ? 1 : 0,
+				h1		: type == 'h1' ? 1 : 0,
+				h2		: type == 'h2' ? 1 : 0,
+				h3		: type == 'h3' ? 1 : 0,
+				h4		: type == 'h4' ? 1 : 0,
+				h5		: type == 'h5' ? 1 : 0,
+				h6		: type == 'h6' ? 1 : 0,
+				h7		: type == 'h7' ? 1 : 0
 			});
 			
 		} else {
@@ -156,10 +212,26 @@ function updatecount(data, wordlist, type){
 				wordobj.ptitle++;
 			} else if (type == 'titles') {
 				wordobj.titles++;
+			} else if (type == 'alt') {
+				wordobj.alt++;
 			} else if (type == 'desc') {
 				wordobj.desc++;
 			} else if (type == 'keyw') {
 				wordobj.keyw++;
+			} else if (type == 'h1') {
+				wordobj.h1++;
+			} else if (type == 'h2') {
+				wordobj.h2++;
+			} else if (type == 'h3') {
+				wordobj.h3++;
+			} else if (type == 'h4') {
+				wordobj.h4++;
+			} else if (type == 'h5') {
+				wordobj.h5++;
+			} else if (type == 'h6') {
+				wordobj.h6++;
+			} else if (type == 'h7') {
+				wordobj.h7++;
 			}
 		}
 	});
