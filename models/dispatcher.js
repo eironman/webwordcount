@@ -16,48 +16,36 @@ function index(req, res, err){
  */
 function count(req, res, err){
 	
-	var http = require('http');
+	var request = require('request');
 	var wordlist = [];
 	var data = '';
 	var url, host, path, options;
-
-	// Get url, remove http if exists
-	var url = req.params[0].replace(/^https?:\/\//, '');
 	
-	// Is there a path?
-	var index = url.indexOf('/');
-	if (index !== -1){
-		
-		options = {
-		  host: url.slice(0, index),
-		  path: url.slice(index, url.length)
-		};
-		
-	} else {
-		
-		options = {
-			host: url
-		};
+	// Get url, remove http if exists
+	url = req.params[0];
+	var http = /^https?:\/\//.exec(url);
+	if ( http === null ){
+		url = 'http://' + url;
 	}
 	
 	// Do the request
-	http.request(options, function(response) {
+	request(url, function(error, response, body) {
 		
-		// Save data received
-		response.on('data', function (chunk) {
-			data += chunk;
-		});
-
-		response.on('end', function () {
+		if (!error && response.statusCode == 200) {
+			
+			// Success
 			console.log('[OK] Request to: ' + url);
-			wordlist = docount(data.toString(), wordlist);
+			wordlist = docount(body.toString(), wordlist);
 			res.json(wordlist);
-		});
-		
-	}).on('error', function(e){
-		console.log('[ERROR] Request to: ' + url + ' Error: '+ e.message);
-		res.send('Error');
-	}).end();
+			
+		} else{
+			
+			// Error
+			console.log('[ERROR] Request to: ' + url + ' Error: ' + error + 
+						' Status: ' + response.statusCode);
+			res.send('Error');
+		}
+	});
 }
 
 /**
@@ -88,7 +76,7 @@ var _ = require('underscore');
 function docount(data, wordlist){
 	
 	// Remove js code
-	data = data.replace(/<script([\s\S]+?)\/script>/g, ' ');
+	data = data.replace(/<script([\s\S]+?)\/script>/gi, ' ');
 	
 	// Extract header words: title, description, keywords
 	data = extractHeaderData(data, wordlist);
@@ -180,13 +168,13 @@ function extractHeaderData(data, wordlist){
 		}
 		
 		// Keywords. There can be several keyword tags for different languages
-		var keywordsRegexp = /name="keywords".+?content="([^"]+)"/g;
+		var keywordsRegexp = /name="keywords".+?content="([^"]+)"/gi;
 		while ((arr = keywordsRegexp.exec(header)) !== null){
 			wordlist = updatecount(arr[1], wordlist, 'keyw');
 		}
 		
 		// Description. There can be several description tags for different languages
-		var descriptionRegexp = /name="description".+?content="([^"]+)"/g;
+		var descriptionRegexp = /name="description".+?content="([^"]+)"/gi;
 		while ((arr = descriptionRegexp.exec(header)) !== null){
 			wordlist = updatecount(arr[1], wordlist, 'desc');
 		}
