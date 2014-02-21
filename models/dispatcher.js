@@ -17,13 +17,29 @@ function index(req, res, err){
 function count(req, res, err){
 	
 	var http = require('http');
-	var wordlist = [], data = '';
+	var wordlist = [];
+	var data = '';
+	var url, host, path, options;
 
-	var url = req.params[0];
-	var options = {
-	  host: url
-	};
-
+	// Get url, remove http if exists
+	var url = req.params[0].replace(/^https?:\/\//, '');
+	
+	// Is there a path?
+	var index = url.indexOf('/');
+	if (index !== -1){
+		
+		options = {
+		  host: url.slice(0, index),
+		  path: url.slice(index, url.length)
+		};
+		
+	} else {
+		
+		options = {
+			host: url
+		};
+	}
+	
 	// Do the request
 	http.request(options, function(response) {
 		
@@ -75,15 +91,12 @@ function docount(data, wordlist){
 	data = data.replace(/<script([\s\S]+?)\/script>/g, ' ');
 	
 	// Extract header words: title, description, keywords
-	extractHeaderData(data, wordlist);
-	
-	// Remove header
-	data = data.replace(/<head>[\s\S]+<\/head>/g, ' ');
+	data = extractHeaderData(data, wordlist);
 	
 	// Extract headings words
-	extractHeadingData(data, wordlist);
+	data = extractHeadingData(data, wordlist);
 	
-	// Count words in text
+	// Count words in regular text
 	wordlist = updatecount(data, wordlist);
 	
 	// Sort array
@@ -115,6 +128,35 @@ function extractHeadingData(data, wordlist){
 	}
 	data = data.replace(/<h2>[\s\S]+?<\/h2>/g, ' ');
 	
+	// h3
+	var regexp = /<h3>([\s\S]+?)<\/h3>/g;
+	while ((arr = regexp.exec(data)) !== null){
+		wordlist = updatecount(arr[1], wordlist, 'h3');
+	}
+	data = data.replace(/<h3>[\s\S]+?<\/h3>/g, ' ');
+	
+	// h4
+	var regexp = /<h4>([\s\S]+?)<\/h4>/g;
+	while ((arr = regexp.exec(data)) !== null){
+		wordlist = updatecount(arr[1], wordlist, 'h4');
+	}
+	data = data.replace(/<h4>[\s\S]+?<\/h4>/g, ' ');
+	
+	// h5
+	var regexp = /<h5>([\s\S]+?)<\/h5>/g;
+	while ((arr = regexp.exec(data)) !== null){
+		wordlist = updatecount(arr[1], wordlist, 'h5');
+	}
+	data = data.replace(/<h5>[\s\S]+?<\/h5>/g, ' ');
+	
+	// h6
+	var regexp = /<h6>([\s\S]+?)<\/h6>/g;
+	while ((arr = regexp.exec(data)) !== null){
+		wordlist = updatecount(arr[1], wordlist, 'h6');
+	}
+	data = data.replace(/<h6>[\s\S]+?<\/h6>/g, ' ');
+	
+	return data;
 }
 
 /**
@@ -124,10 +166,12 @@ function extractHeadingData(data, wordlist){
  */
 function extractHeaderData(data, wordlist){
 	
-	var header = (/<head>([\s\S]+)<\/head>/).exec(data)
+	var header = (/<head>([\s\S]+)<\/head>/).exec(data);
 	var arr;
 	
 	if (header !== null){
+		
+		header = header[1];
 		
 		// Page title
 		arr = (/<title>(.+?)<\/title>/g).exec(header);
@@ -135,18 +179,22 @@ function extractHeaderData(data, wordlist){
 			wordlist = updatecount(arr[1], wordlist, 'ptitle');
 		}
 		
+		// Keywords. There can be several keyword tags for different languages
+		var keywordsRegexp = /name="keywords".+?content="([^"]+)"/g;
+		while ((arr = keywordsRegexp.exec(header)) !== null){
+			wordlist = updatecount(arr[1], wordlist, 'keyw');
+		}
+		
 		// Description. There can be several description tags for different languages
-		var descriptionRegexp = /name="keywords".+?content="([^"]+)"/g;
+		var descriptionRegexp = /name="description".+?content="([^"]+)"/g;
 		while ((arr = descriptionRegexp.exec(header)) !== null){
 			wordlist = updatecount(arr[1], wordlist, 'desc');
 		}
 		
-		// Keywords. There can be several keyword tags for different languages
-		var keywordsRegexp = /name="description".+?content="([^"]+)"/g;
-		while ((arr = keywordsRegexp.exec(header)) !== null){
-			wordlist = updatecount(arr[1], wordlist, 'keyw');
-		}
+		data = data.replace(/<head>[\s\S]+<\/head>/g, ' ');
 	}
+	
+	return data;
 }
 
 /**
@@ -192,13 +240,13 @@ function updatecount(data, wordlist, type){
 				alt		: type == 'alt' ? 1 : 0,	// Img alt attribute
 				desc	: type == 'desc' ? 1 : 0,
 				keyw	: type == 'keyw' ? 1 : 0,
+				heading	: _(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']).contains(type) ? 1 : 0,
 				h1		: type == 'h1' ? 1 : 0,
 				h2		: type == 'h2' ? 1 : 0,
 				h3		: type == 'h3' ? 1 : 0,
 				h4		: type == 'h4' ? 1 : 0,
 				h5		: type == 'h5' ? 1 : 0,
-				h6		: type == 'h6' ? 1 : 0,
-				h7		: type == 'h7' ? 1 : 0
+				h6		: type == 'h6' ? 1 : 0
 			});
 			
 		} else {
@@ -220,18 +268,22 @@ function updatecount(data, wordlist, type){
 				wordobj.keyw++;
 			} else if (type == 'h1') {
 				wordobj.h1++;
+				wordobj.heading++;
 			} else if (type == 'h2') {
 				wordobj.h2++;
+				wordobj.heading++;
 			} else if (type == 'h3') {
 				wordobj.h3++;
+				wordobj.heading++;
 			} else if (type == 'h4') {
 				wordobj.h4++;
+				wordobj.heading++;
 			} else if (type == 'h5') {
 				wordobj.h5++;
+				wordobj.heading++;
 			} else if (type == 'h6') {
 				wordobj.h6++;
-			} else if (type == 'h7') {
-				wordobj.h7++;
+				wordobj.heading++;
 			}
 		}
 	});

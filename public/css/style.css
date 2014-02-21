@@ -4,8 +4,12 @@
 #form-count label{
 	color: #999;
 }
-.form-group{
+.form-group input{
 	margin-right: 5px;
+}
+.form-control{
+	display: inline;
+	width: auto;
 }
 #result th{
 	padding: 8px 0px 8px 20px;
@@ -17,4 +21,7 @@
 }
 #result th.sorttable_sorted_reverse{
 	background: url(/img/desc.gif) left center no-repeat;
+}
+#result tr td:first-child{
+	max-width: 150px;
 }

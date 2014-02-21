@@ -21,16 +21,16 @@ $(function(){
 			resetResult();
 			
 			// Add requested url
-			$("#urls-requested").append('<li class="active"><a href="">' + url + 
-										' <img src="/img/loading.gif" id="loading"></a></li>')
+			$("#urls-requested").append('<li class="active"><a href="">' + url + '</a></li>');
 			
 			// Do the request
 			$.ajax({
 				url: '/count/' + url
 			}).done(function(words){
 				
+				$(".loading").addClass('hidden');
 				$("#result tbody").html('');
-				var count=0, length=0, headings=0;
+				var count=0, length=0;
 				
 				// Length filter
 				var filter = $('ul.dropdown-menu > li.disabled').attr('id');
@@ -45,7 +45,6 @@ $(function(){
 				}
 				
 				// Show result
-				$("#loading").remove();
 				$("#result tbody").html('');
 				$(words).each(function(index){
 					
@@ -59,7 +58,7 @@ $(function(){
 								'<td>' + words[index].ptitle + '</td>' +
 								'<td>' + words[index].desc + '</td>' +
 								'<td>' + words[index].keyw + '</td>' +
-								'<td>' + headings + '</td>' +
+								'<td>' + words[index].heading + '</td>' +
 							'</tr>')
 						count++;
 					}
@@ -67,7 +66,7 @@ $(function(){
 				$('.page-header > span').html(count);
 				
 			}).error(function(){
-				$("#loading").remove();
+				$(".loading").addClass('hidden');
 			});
 		}
 	});
@@ -77,6 +76,7 @@ $(function(){
  * Resets the results
  */
 function resetResult(){
+	$(".loading").removeClass('hidden');
 	$("#result th").removeClass('sorttable_sorted sorttable_sorted_reverse');
 	$("#result tbody").html(
 		'<tr><td>-</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>');
