@@ -11,6 +11,11 @@
 	display: inline;
 	width: auto;
 }
+@media (max-width: 320px) {
+	.form-control{
+		width: 175px;	
+	}
+}
 #result th{
 	padding: 8px 0px 8px 20px;
 	cursor: pointer;

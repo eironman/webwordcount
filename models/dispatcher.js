@@ -6,7 +6,7 @@
  * @param res
  */
 function index(req, res, err){
-	res.render('index', {title: 'Count words in a web | wordwebcount.com'});
+	res.render('index', {title: 'Count words in a web | wherearemywords.com'});
 }
 
 /**
@@ -21,7 +21,7 @@ function count(req, res, err){
 	var data = '';
 	var url, host, path, options;
 	
-	// Get url, remove http if exists
+	// Get url, add http if needed
 	url = req.params[0];
 	var http = /^https?:\/\//.exec(url);
 	if ( http === null ){
@@ -43,7 +43,7 @@ function count(req, res, err){
 			// Error
 			console.log('[ERROR] Request to: ' + url + ' Error: ' + error + 
 						' Status: ' + response.statusCode);
-			res.send('Error');
+			res.status(404).json({"statusCode" : response.statusCode});
 		}
 	});
 }
@@ -196,8 +196,8 @@ function updatecount(data, wordlist, type){
 	type = type || 'text';
 	var wordobj;
 
-	// Remove parenthesis, commas, points, ...
-	data = data.replace(/([\;(\),\.:\[\]\{\}=\?¿\"#]+)|(&nbsp)/g, ' ');
+	// Remove parenthesis, commas, points, ...				-- This only for one character: ' --
+	data = data.replace(/([\;(\),\.:\[\]\{\}=\?¿\"#]+)|(&nbsp)|(^|\s|,|\.)'|'($|\s|\.|,)/g, ' ');
 
 	// Remove tags
 	data = data.replace(/<[\s\S]+?>/g, ' ');

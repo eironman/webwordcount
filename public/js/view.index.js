@@ -66,8 +66,9 @@ $(function(){
 				$('.page-header > span').html(count);
 				$("#result th.total").addClass('sorttable_sorted_reverse');
 				
-			}).error(function(){
+			}).error(function(e){
 				$(".loading").addClass('hidden');
+				alert('Request error, code ' + e.responseJSON.statusCode);
 			});
 		}
 	});
