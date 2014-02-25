@@ -1,15 +1,13 @@
 Webwordcount
 =========
 
-Application to count words in a web. Right now only counts words appearing in text, not counting words in description, alt or title.
+Application with SEO pourposes to count words in a web.
 
-Uses node.js, express.js, underscore.js and jade.
-Plans to use backbone.js for the frontend
+Uses node.js, express.js, underscore.js, jade and bootstrap.
+Will use backbone.js for the frontend.
 
-Things to do:
+To do:
 
-- Option to filter common words
-- Search for specific word
-- Improve parsing to get if a word appears in a description, alt, title, ...
 - Follow same domain links
-- ...
+- Filter/search specific words
+- Limit the number of rows to avoid slowing down browser

@@ -17,7 +17,7 @@ function index(req, res, err){
 function count(req, res, err){
 	
 	var request = require('request');
-	var wordlist = [];
+	var list = {'words':[], 'links':[], 'url': []};
 	var data = '';
 	var url, host, path, options;
 	
@@ -35,8 +35,9 @@ function count(req, res, err){
 			
 			// Success
 			console.log('[OK] Request to: ' + url);
-			wordlist = docount(body.toString(), wordlist);
-			res.json(wordlist);
+			list = docount(body.toString(), list);
+			list.url.push(url);
+			res.json(list);
 			
 		} else{
 			
@@ -70,29 +71,53 @@ var _ = require('underscore');
 /**
  * Does the word count
  * @param string data
- * @param Array wordlist
+ * @param Array list
  * @returns {Array}
  */
-function docount(data, wordlist){
+function docount(data, list){
 	
 	// Remove js code
 	data = data.replace(/<script([\s\S]+?)\/script>/gi, ' ');
 	
 	// Extract header words: title, description, keywords
-	data = extractHeaderData(data, wordlist);
-	
+	data = extractHeaderData(data, list.words);
+
 	// Extract headings words
-	data = extractHeadingData(data, wordlist);
+	data = extractHeadingData(data, list.words);
+	
+	extractLinks(data, list.links);
 	
 	// Count words in regular text
-	wordlist = updatecount(data, wordlist);
+	updatecount(data, list.words);
 	
-	// Sort array
-	wordlist = _(wordlist).sortBy(function(word){
+	// Sort array but word appearances
+	list.words = _(list.words).sortBy(function(word){
 		return word.c;
 	}).reverse();
 	
-	return wordlist;
+	return list;
+}
+
+/**
+ * Extracts links that follow the same domain
+ * @param data
+ * @param linklist
+ */
+function extractLinks(data, linklist){
+	
+	var regexp = /href="([^\.:]+?)"/g;
+	while ((arr = regexp.exec(data)) !== null){
+		
+		// Find link in list
+		link = _(linklist).find(function(ob){
+			return ob == arr[1];
+		});
+		
+		// Add link
+		if ( typeof link=="undefined" ){
+			linklist.push(arr[1]);
+		}
+	}
 }
 
 /**
@@ -110,35 +135,35 @@ function extractHeadingData(data, wordlist){
 	data = data.replace(/<h1>[\s\S]+?<\/h1>/g, ' ');
 	
 	// h2
-	var regexp = /<h2>([\s\S]+?)<\/h2>/g;
+	regexp = /<h2>([\s\S]+?)<\/h2>/g;
 	while ((arr = regexp.exec(data)) !== null){
 		wordlist = updatecount(arr[1], wordlist, 'h2');
 	}
 	data = data.replace(/<h2>[\s\S]+?<\/h2>/g, ' ');
 	
 	// h3
-	var regexp = /<h3>([\s\S]+?)<\/h3>/g;
+	regexp = /<h3>([\s\S]+?)<\/h3>/g;
 	while ((arr = regexp.exec(data)) !== null){
 		wordlist = updatecount(arr[1], wordlist, 'h3');
 	}
 	data = data.replace(/<h3>[\s\S]+?<\/h3>/g, ' ');
 	
 	// h4
-	var regexp = /<h4>([\s\S]+?)<\/h4>/g;
+	regexp = /<h4>([\s\S]+?)<\/h4>/g;
 	while ((arr = regexp.exec(data)) !== null){
 		wordlist = updatecount(arr[1], wordlist, 'h4');
 	}
 	data = data.replace(/<h4>[\s\S]+?<\/h4>/g, ' ');
 	
 	// h5
-	var regexp = /<h5>([\s\S]+?)<\/h5>/g;
+	regexp = /<h5>([\s\S]+?)<\/h5>/g;
 	while ((arr = regexp.exec(data)) !== null){
 		wordlist = updatecount(arr[1], wordlist, 'h5');
 	}
 	data = data.replace(/<h5>[\s\S]+?<\/h5>/g, ' ');
 	
 	// h6
-	var regexp = /<h6>([\s\S]+?)<\/h6>/g;
+	regexp = /<h6>([\s\S]+?)<\/h6>/g;
 	while ((arr = regexp.exec(data)) !== null){
 		wordlist = updatecount(arr[1], wordlist, 'h6');
 	}
@@ -196,7 +221,7 @@ function updatecount(data, wordlist, type){
 	type = type || 'text';
 	var wordobj;
 
-	// Remove parenthesis, commas, points, ...				-- This only for one character: ' --
+	// Remove parenthesis, commas, points, ...				-- This only for the "'" character --
 	data = data.replace(/([\;(\),\.:\[\]\{\}=\?¿\"#]+)|(&nbsp)|(^|\s|,|\.)'|'($|\s|\.|,)/g, ' ');
 
 	// Remove tags
@@ -224,8 +249,8 @@ function updatecount(data, wordlist, type){
 				c		: 1,	// Total count
 				text	: type == 'text' ? 1 : 0,
 				ptitle	: type == 'ptitle' ? 1 : 0,
-				titles	: type == 'titles' ? 1 : 0,	// Tags title attribute
-				alt		: type == 'alt' ? 1 : 0,	// Img alt attribute
+				titles	: type == 'titles' ? 1 : 0,	// Attribute title
+				alt		: type == 'alt' ? 1 : 0,	// Alt attribute
 				desc	: type == 'desc' ? 1 : 0,
 				keyw	: type == 'keyw' ? 1 : 0,
 				heading	: _(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']).contains(type) ? 1 : 0,
