@@ -16,13 +16,12 @@ function index(req, res, err){
  */
 function count(req, res, err){
 	
+	// List of words. Global variable
+	list = {'words':[], 'paths':[], 'url': []};
 	var request = require('request');
-	var list = {'words':[], 'links':[], 'url': []};
-	var data = '';
-	var url, host, path, options;
 	
 	// Get url, add http if needed
-	url = req.params[0];
+	var url = req.params[0];
 	var http = /^https?:\/\//.exec(url);
 	if ( http === null ){
 		url = 'http://' + url;
@@ -35,7 +34,7 @@ function count(req, res, err){
 			
 			// Success
 			console.log('[OK] Request to: ' + url);
-			list = docount(body.toString(), list);
+			docount(body.toString());
 			list.url.push(url);
 			res.json(list);
 			
@@ -74,21 +73,21 @@ var _ = require('underscore');
  * @param Array list
  * @returns {Array}
  */
-function docount(data, list){
+function docount(data){
 	
 	// Remove js code
 	data = data.replace(/<script([\s\S]+?)\/script>/gi, ' ');
 	
 	// Extract header words: title, description, keywords
-	data = extractHeaderData(data, list.words);
+	data = extractHeaderData(data);
 
 	// Extract headings words
-	data = extractHeadingData(data, list.words);
+	data = extractHeadingData(data);
 	
-	extractLinks(data, list.links);
+	extractPaths(data);
 	
 	// Count words in regular text
-	updatecount(data, list.words);
+	updatecount(data);
 	
 	// Sort array but word appearances
 	list.words = _(list.words).sortBy(function(word){
@@ -99,23 +98,23 @@ function docount(data, list){
 }
 
 /**
- * Extracts links that follow the same domain
+ * Extracts paths that follow the same domain
  * @param data
- * @param linklist
  */
-function extractLinks(data, linklist){
+function extractPaths(data){
 	
 	var regexp = /href="([^\.:]+?)"/g;
+	var path;
 	while ((arr = regexp.exec(data)) !== null){
 		
-		// Find link in list
-		link = _(linklist).find(function(ob){
+		// Find path in list
+		path = _(list.paths).find(function(ob){
 			return ob == arr[1];
 		});
 		
-		// Add link
-		if ( typeof link=="undefined" ){
-			linklist.push(arr[1]);
+		// Add path
+		if ( typeof path=="undefined" ){
+			list.paths.push(arr[1]);
 		}
 	}
 }
@@ -123,49 +122,48 @@ function extractLinks(data, linklist){
 /**
  * Extracts words from heading tags
  * @param data
- * @param wordlist
  */
-function extractHeadingData(data, wordlist){
+function extractHeadingData(data){
 	
 	// h1. Good practices ask for only one h1, but there can be more
 	var regexp = /<h1>([\s\S]+?)<\/h1>/g;
 	while ((arr = regexp.exec(data)) !== null){
-		wordlist = updatecount(arr[1], wordlist, 'h1');
+		updatecount(arr[1], 'h1');
 	}
 	data = data.replace(/<h1>[\s\S]+?<\/h1>/g, ' ');
 	
 	// h2
 	regexp = /<h2>([\s\S]+?)<\/h2>/g;
 	while ((arr = regexp.exec(data)) !== null){
-		wordlist = updatecount(arr[1], wordlist, 'h2');
+		updatecount(arr[1], 'h2');
 	}
 	data = data.replace(/<h2>[\s\S]+?<\/h2>/g, ' ');
 	
 	// h3
 	regexp = /<h3>([\s\S]+?)<\/h3>/g;
 	while ((arr = regexp.exec(data)) !== null){
-		wordlist = updatecount(arr[1], wordlist, 'h3');
+		updatecount(arr[1], 'h3');
 	}
 	data = data.replace(/<h3>[\s\S]+?<\/h3>/g, ' ');
 	
 	// h4
 	regexp = /<h4>([\s\S]+?)<\/h4>/g;
 	while ((arr = regexp.exec(data)) !== null){
-		wordlist = updatecount(arr[1], wordlist, 'h4');
+		updatecount(arr[1], 'h4');
 	}
 	data = data.replace(/<h4>[\s\S]+?<\/h4>/g, ' ');
 	
 	// h5
 	regexp = /<h5>([\s\S]+?)<\/h5>/g;
 	while ((arr = regexp.exec(data)) !== null){
-		wordlist = updatecount(arr[1], wordlist, 'h5');
+		updatecount(arr[1], 'h5');
 	}
 	data = data.replace(/<h5>[\s\S]+?<\/h5>/g, ' ');
 	
 	// h6
 	regexp = /<h6>([\s\S]+?)<\/h6>/g;
 	while ((arr = regexp.exec(data)) !== null){
-		wordlist = updatecount(arr[1], wordlist, 'h6');
+		updatecount(arr[1], 'h6');
 	}
 	data = data.replace(/<h6>[\s\S]+?<\/h6>/g, ' ');
 	
@@ -175,9 +173,8 @@ function extractHeadingData(data, wordlist){
 /**
  * Extracts words from header tags title, description and keywords
  * @param data
- * @param wordlist
  */
-function extractHeaderData(data, wordlist){
+function extractHeaderData(data){
 	
 	var header = (/<head>([\s\S]+)<\/head>/).exec(data);
 	var arr;
@@ -189,19 +186,19 @@ function extractHeaderData(data, wordlist){
 		// Page title
 		arr = (/<title>(.+?)<\/title>/g).exec(header);
 		if (arr !== null) {
-			wordlist = updatecount(arr[1], wordlist, 'ptitle');
+			updatecount(arr[1], 'ptitle');
 		}
 		
 		// Keywords. There can be several keyword tags for different languages
 		var keywordsRegexp = /name="keywords".+?content="([^"]+)"/gi;
 		while ((arr = keywordsRegexp.exec(header)) !== null){
-			wordlist = updatecount(arr[1], wordlist, 'keyw');
+			updatecount(arr[1], 'keyw');
 		}
 		
 		// Description. There can be several description tags for different languages
 		var descriptionRegexp = /name="description".+?content="([^"]+)"/gi;
 		while ((arr = descriptionRegexp.exec(header)) !== null){
-			wordlist = updatecount(arr[1], wordlist, 'desc');
+			updatecount(arr[1], 'desc');
 		}
 		
 		data = data.replace(/<head>[\s\S]+<\/head>/g, ' ');
@@ -211,12 +208,11 @@ function extractHeaderData(data, wordlist){
 }
 
 /**
- * Updates the count
+ * Updates the word count
  * @param data
- * @param wordlist
  * @param type: text, title, description, ...
  */
-function updatecount(data, wordlist, type){
+function updatecount(data, type){
 	
 	type = type || 'text';
 	var wordobj;
@@ -237,14 +233,14 @@ function updatecount(data, wordlist, type){
 	_(data).each(function(word){
 		
 		// Find word in array
-		wordobj = _(wordlist).find(function(ob){
+		wordobj = _(list.words).find(function(ob){
 			return ob.w == word;
 		});
 		
 		// Add word or update count
 		if ( typeof wordobj=="undefined" ){
 			
-			wordlist.push({
+			list.words.push({
 				w		: word,
 				c		: 1,	// Total count
 				text	: type == 'text' ? 1 : 0,
@@ -300,8 +296,6 @@ function updatecount(data, wordlist, type){
 			}
 		}
 	});
-	
-	return wordlist;
 }
 
 
