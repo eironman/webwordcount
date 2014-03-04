@@ -4,8 +4,11 @@ block content
 
 	//- Template for the list of urls
 	script#url-list(type="text/template")
-		li.active
-			a(href="#") <%= url %>
+		<% _.each(list, function(obj){  %>
+		//- li.active
+		li
+			a(href="#") <%= obj.url %>
+		<% }); %>
 		
 	//- Template for the list of words
 	script#word-list(type="text/template")

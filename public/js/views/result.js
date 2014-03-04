@@ -1,29 +1,17 @@
 $(function(){
 
 	/**
-	 * Request view
+	 * Result view
 	 */
-	RequestView = Backbone.View.extend({
+	ResultView = Backbone.View.extend({
 		
 		// Result list
 		el: '#result tbody',
 
-		initialize: function(){
-			// Actions depending on the model changes
-			this.listenTo(this.model, "change:fetched", this.render);
-			this.listenTo(this.model, "change:requestedUrl", this.renderUrl);
-		},
-		
-		// Renders url in the list
-		renderUrl: function(){
-			var template = _.template($('#url-list').html(), {url: this.model.get('requestedUrl')});
-			$("#urls-requested").append(template);
-		},
-		
 		// Renders the list of words
 		render: function(){
 			
-			// Only render if fetched is true
+			// Only render if the model has fetched the data
 			if ( !this.model.get('fetched') ){
 				return;
 			}
@@ -68,9 +56,6 @@ $(function(){
 			// By default is sorted by total count
 			$("#result th").removeClass('sorttable_sorted sorttable_sorted_reverse');
 			$("#result th.total").addClass('sorttable_sorted_reverse');
-			
-			// Set the trigger to its original value
-			this.model.set('fetched', false);
 		}
 	});
 });

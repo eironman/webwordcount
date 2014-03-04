@@ -3,16 +3,11 @@ $(function(){
 	/**
 	 * Default view
 	 */
-	DefaultView = Backbone.View.extend({
+	ResetView = Backbone.View.extend({
 		
 		// Result list
 		el: '#result tbody',
 
-		initialize: function(){
-			// If the url model changes, render it
-			this.listenTo(this.model, "change:requestedUrl", this.render);
-		},
-		
 		// Default value of the list
 		initWords: [{
 			w		: '-',
@@ -25,9 +20,9 @@ $(function(){
 		}],
 		
 		render: function(){
-			$(".loading").removeClass('hidden');
-			$("#urls-requested").html('');
-			$('.page-header > span').html(0);
+			
+			$(".loading").removeClass('hidden'); // Loading
+			$('.page-header > span').html(0); // Total count
 			
 			// Default list html
 			var params = {list: this.initWords, lengthFilter: 0};

@@ -17,7 +17,7 @@ function index(req, res, err){
 function count(req, res, err){
 	
 	// List of words. Global variable
-	list = {'words':[], 'paths':[], 'url': []};
+	list = {'words':[], 'paths':[]};
 	var request = require('request');
 	
 	// Get url, add http if needed
@@ -35,15 +35,22 @@ function count(req, res, err){
 			// Success
 			console.log('[OK] Request to: ' + url);
 			docount(body.toString());
-			list.url.push(url);
 			res.json(list);
 			
 		} else{
 			
+			var statusCode = "'-'", errorCode = "'-'";
+			if ( typeof response !== "undefined" ){
+				statusCode = response.statusCode;
+			}
+			if ( error !== null && typeof error.code !== "undefined"){
+				errorCode = error.code;
+			}
+			
 			// Error
 			console.log('[ERROR] Request to: ' + url + ' Error: ' + error + 
-						' Status: ' + response.statusCode);
-			res.status(404).json({"statusCode" : response.statusCode});
+						' Status: ' + statusCode);
+			res.status(404).json({"statusCode" : statusCode, 'error' : errorCode});
 		}
 	});
 }

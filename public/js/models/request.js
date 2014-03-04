@@ -8,26 +8,17 @@ $(function(){
 		defaults: {
 			words		: [],
 			paths		: [],
-			fetched		: false,
 			requestedUrl: '',
-			urlRegexp	: /^(?:https?:\/\/)?(?:[\w]+\.)([a-zA-Z\.]{2,6})([\/\w\.-]*)*\/?$/
+			fetched		: false, 	// When fetched is true, result view renders
 		},
 
-		doRequest: function(requestUrl){
+		doRequest: function(){
 			
-			// Validate url
-			if ( requestUrl == '' || !this.get('urlRegexp').test(requestUrl) ){
+			// Check if its url has already been fetched
+			if ( this.get('fetched') ){
 				return;
 			}
 			
-			// Check if the request has already been done
-			if (this.get('requestedUrl') == requestUrl) {
-				this.set('fetched', true);
-				return;
-			}
-			
-			// Set the requestd url in the model
-			this.set('requestedUrl', requestUrl);
 			var self = this;
 			
 			// Do the request
@@ -43,9 +34,17 @@ $(function(){
 				
 			}).error(function(e){
 				$(".loading").addClass('hidden');
-				alert('Request error, code ' + e.responseJSON.statusCode);
+				alert('Request error ' + e.responseJSON.error +
+					  ', code ' + e.responseJSON.statusCode);
 			});
 		}
+	});
+	
+	/**
+	 * Requests collection
+	 */
+	RequestCollection = Backbone.Collection.extend({
+		model: Request
 	});
 });
 
