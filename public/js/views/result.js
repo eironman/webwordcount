@@ -1,7 +1,7 @@
 $(function(){
 
 	/**
-	 * Result view
+	 * Result View
 	 */
 	ResultView = Backbone.View.extend({
 		

@@ -1,6 +1,11 @@
 .navbar-header h1{
 	margin-top: 0;
 }
+.nav > li > a:hover,
+.nav > li > a:focus{
+	background-color: #428BCA;
+    color: #FFFFFF;
+}
 #form-count label{
 	color: #999;
 }

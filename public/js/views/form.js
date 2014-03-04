@@ -1,21 +1,18 @@
 $(function(){
 
 	/**
-	 * Request form
+	 * Request form View
 	 */
 	FormView = Backbone.View.extend({
 		
 		// Form element
 		el: '#form-count',
 		
-		// It will store the urls requested and the cid of the models with the
-		// stored data of the request
-		urls: [],
-
 		options: {
 			collection	: new RequestCollection(),
 			result		: new ResultView(),
 			reset		: new ResetView(),
+			urls		: new UrlsRequestedView(),
 		},
 		
 		events: {
@@ -35,26 +32,28 @@ $(function(){
 				return;
 			}
 			
-			this.call(requestedUrl);
+			this.submit(requestedUrl);
 		},
 		
 		// Does the action
-		call: function(requestedUrl){
+		submit: function(requestedUrl){
 			
 			// Resets previous results
 			this.options.reset.render();
 			
 			// Check if the request has already been done
-			var url = _(this.urls).find(function(obj){
+			var url = _(this.options.urls.list).find(function(obj){
 				return obj.url == requestedUrl;
 			});
 			
 			// If the request has already been done use the data in the model
 			if ( typeof url !== "undefined" ) {
 				
+				// TODO: Mark url as active
+				
 				// Find the model in the collection
-				var request = this.collection.get(url.modelCid);
-				this.options.result.model = request;
+				var model = this.collection.get(url.modelCid);
+				this.options.result.model = model;
 				this.options.result.render();
 				return;
 			}
@@ -63,9 +62,12 @@ $(function(){
 			var request = new Request({'requestedUrl': requestedUrl});
 			this.collection.add(request);
 			
-			// Adds url to the list of requested and render it
-			this.urls.push({url: requestedUrl, modelCid: request.cid});
-			this.render();
+			// Adds url to the list
+			this.options.urls.addUrl({
+				url		: requestedUrl,
+				modelCid: request.cid,
+				active	: true
+			});
 			
 			// Sets the model to the result view
 			var result = this.options.result;
@@ -74,14 +76,8 @@ $(function(){
 			// When request is finished, render the result
 			result.listenTo(result.model, "change:fetched", result.render);
 			
-			// Does the request
+			// Do the request
 			request.doRequest();
-		},
-		
-		// Renders url in the list
-		render: function(){
-			var template = _.template($('#url-list').html(), {list: this.urls});
-			$("#urls-requested").html(template);
 		}
 	});
 });

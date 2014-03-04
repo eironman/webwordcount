@@ -4,11 +4,13 @@ block content
 
 	//- Template for the list of urls
 	script#url-list(type="text/template")
-		<% _.each(list, function(obj){  %>
-		//- li.active
+		<% _.each(list, function(obj){ if (obj.active) {  %>
+		li.active
+			a(href="#") <%= obj.url %>
+		<% } else { %>
 		li
 			a(href="#") <%= obj.url %>
-		<% }); %>
+		<% }}); %>
 		
 	//- Template for the list of words
 	script#word-list(type="text/template")

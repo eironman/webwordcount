@@ -16,7 +16,7 @@ function index(req, res, err){
  */
 function count(req, res, err){
 	
-	// List of words. Global variable
+	// List of words and paths. Global variable
 	list = {'words':[], 'paths':[]};
 	var request = require('request');
 	
@@ -39,6 +39,7 @@ function count(req, res, err){
 			
 		} else{
 			
+			// Error
 			var statusCode = "'-'", errorCode = "'-'";
 			if ( typeof response !== "undefined" ){
 				statusCode = response.statusCode;
@@ -46,8 +47,6 @@ function count(req, res, err){
 			if ( error !== null && typeof error.code !== "undefined"){
 				errorCode = error.code;
 			}
-			
-			// Error
 			console.log('[ERROR] Request to: ' + url + ' Error: ' + error + 
 						' Status: ' + statusCode);
 			res.status(404).json({"statusCode" : statusCode, 'error' : errorCode});

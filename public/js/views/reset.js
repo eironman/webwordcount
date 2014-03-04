@@ -1,7 +1,7 @@
 $(function(){
 	
 	/**
-	 * Default view
+	 * Default View
 	 */
 	ResetView = Backbone.View.extend({
 		
