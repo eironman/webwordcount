@@ -6,7 +6,7 @@
  * @param res
  */
 function index(req, res, err){
-	res.render('index', {title: 'Count words in a web | wherearemywords.com'});
+	res.render('index', {title: 'Count words appearances in a web | wherearemywords.com'});
 }
 
 /**
@@ -250,11 +250,11 @@ function updatecount(data, type){
 				w		: word,
 				c		: 1,	// Total count
 				text	: type == 'text' ? 1 : 0,
-				ptitle	: type == 'ptitle' ? 1 : 0,
+				ptitle	: type == 'ptitle' ? 1 : 0,	// Page title
 				titles	: type == 'titles' ? 1 : 0,	// Attribute title
 				alt		: type == 'alt' ? 1 : 0,	// Alt attribute
-				desc	: type == 'desc' ? 1 : 0,
-				keyw	: type == 'keyw' ? 1 : 0,
+				desc	: type == 'desc' ? 1 : 0,	// Description tag
+				keyw	: type == 'keyw' ? 1 : 0,	// Keyword tag
 				heading	: _(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']).contains(type) ? 1 : 0,
 				h1		: type == 'h1' ? 1 : 0,
 				h2		: type == 'h2' ? 1 : 0,

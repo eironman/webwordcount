@@ -35,3 +35,7 @@
 #result tr td:first-child{
 	max-width: 150px;
 }
+.suggestion{
+	text-align: right;
+	font-size: 12px;
+}

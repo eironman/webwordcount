@@ -11,12 +11,13 @@ $(function(){
 		// Renders the list of words
 		render: function(){
 			
+			$(".loading").addClass('hidden');
+			
 			// Only render if the model has fetched the data
 			if ( !this.model.get('fetched') ){
 				return;
 			}
 			
-			$(".loading").addClass('hidden');
 			var count=0, lengthFilter=0, filteredWords=[];
 			
 			// Words list

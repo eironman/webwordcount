@@ -9,7 +9,7 @@ $(function(){
 		el: '#form-count',
 		
 		options: {
-			collection	: new RequestCollection(),
+			collection	: new RequestCollection(), // Collection of models request
 			result		: new ResultView(),
 			reset		: new ResetView(),
 			urls		: new UrlsRequestedView(),

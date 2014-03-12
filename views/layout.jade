@@ -4,7 +4,8 @@ html
 		meta(charset='utf-8')
 		meta(http-equiv='X-UA-Compatible' content='IE=edge')
 		meta(name='viewport' content='width=device-width, initial-scale=1')
-		meta(name='description' content='Count words in a web, separated by title, description, keywords and more.')
+		meta(name='description' content='Count words appearances in a web, sorted by title, description, keywords and more.')
+		meta(name='keywords' content='count, words, word, web, sort, title, description, keywords, headings')
 		meta(name='author' content='Aaron Amengual Arranz')
 		
 		title= title
@@ -14,6 +15,13 @@ html
 		link(rel='stylesheet', href='/css/style.css')
 		
 		script(src='/js/libs/jquery-1.11.0.min.js')
+		script(type="text/javascript").
+			function writeMail( nom, dom, etiqueta){
+				if ( !etiqueta ){
+					etiqueta = nom+'@'+dom;
+				}
+				document.write( '<a hr'+'ef="mai'+'lto:'+nom+'@'+dom+'">'+etiqueta+'</a>' );
+			}
 		
 		// HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
 		<!--[if lt IE 9]>
