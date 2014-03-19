@@ -1,3 +1,7 @@
+.clear{
+	clear: both;
+	overflow: hidden;
+}
 .navbar-header h1{
 	margin-top: 0;
 }
@@ -20,6 +24,14 @@
 	.form-control{
 		width: 175px;	
 	}
+}
+h2.page-header{
+	float: left;
+	width: 100%;
+}
+h2 .action{
+	float: right;
+	cursor: pointer;
 }
 #result th{
 	padding: 8px 0px 8px 20px;
