@@ -15,6 +15,7 @@ html
 		link(rel='stylesheet', href='/css/style.css')
 		
 		script(src='/js/libs/jquery-1.11.0.min.js')
+		script(src='/js/libs/bootstrap.min.js')
 		script(type="text/javascript").
 			function writeMail( nom, dom, etiqueta){
 				if ( !etiqueta ){
@@ -22,6 +23,15 @@ html
 				}
 				document.write( '<a hr'+'ef="mai'+'lto:'+nom+'@'+dom+'">'+etiqueta+'</a>' );
 			}
+			$(function(){
+				// Length filter
+				$('ul.dropdown-menu > li').on('click', function(){
+					$('ul.dropdown-menu > li.disabled').removeClass('disabled');
+					$(this).addClass('disabled');
+					$('li.dropdown > a > span').html($(this).children('a').html());
+					if ( $("#url").val() != '' ) $("#form-count").submit();
+				})
+			})
 		
 		// HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
 		<!--[if lt IE 9]>
@@ -29,14 +39,6 @@ html
 		script(src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js')
 		<![endif]-->
 		
-		script(type="text/javascript").
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-			
-			ga('create', 'UA-45884912-3', 'wherearemywords.com');
-			ga('send', 'pageview');
 		
 	body
 		div(class='navbar navbar-inverse navbar-fixed-top' role='navigation')
@@ -76,13 +78,3 @@ html
 						
 		block content
 
-		script(src='/js/libs/sorttable.js')
-		script(src='/js/libs/bootstrap.min.js')
-		script(src='/js/libs/underscore-1.6.0.min.js')
-		script(src='/js/libs/backbone-1.0.0.min.js')
-		script(src='/js/models/request.js')
-		script(src='/js/views/result.js')
-		script(src='/js/views/reset.js')
-		script(src='/js/views/urlsrequested.js')
-		script(src='/js/views/form.js')
-		script(src='/js/main.js')

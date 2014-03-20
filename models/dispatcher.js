@@ -55,6 +55,13 @@ function count(req, res, err){
 }
 
 /**
+ * Online editor to count words and check its frequency
+ */
+function editor(req, res, err){
+	res.render('editor', {title: 'Count words in a text | wherearemywords.com'});
+}
+
+/**
  * Error message for a bad request
  * @param req
  * @param res
@@ -67,6 +74,7 @@ function badrequest(req, res, next){
 
 exports.index = index;
 exports.count = count;
+exports.editor = editor;
 exports.badrequest = badrequest;
 
 // UTILS

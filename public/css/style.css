@@ -51,3 +51,19 @@ h2 .action{
 	text-align: right;
 	font-size: 12px;
 }
+#text-editor{
+	width: 70%;
+	height: 300px;
+	float: left;
+}
+#text-editor-info{
+	width: 30%;
+	float: left;
+	padding-left: 10px;
+}
+#text-editor-info ul{
+	padding: 0;
+}
+#text-editor-info li{
+	list-style: none;
+}
