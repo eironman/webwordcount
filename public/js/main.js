@@ -21,7 +21,7 @@ $(function(){
 		$("#result th").each(function(){
 			words.push($(this).html().replace(" ", "_"));
 		});
-		data += words.join(";") + "\n";
+		data += words.join(",") + "\n";
 		
 		// Words
 		$("#result tr").each(function(){
@@ -29,7 +29,7 @@ $(function(){
 			$(this).children("td").each(function(){
 				words.push($(this).html());				
 			});
-			data += words.join(";") + "\n";
+			data += words.join(",") + "\n";
 		});
 		
 		var encodedUri = encodeURI(data);
