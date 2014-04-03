@@ -1,29 +1,64 @@
 extends layout
 
 block content
-	div.container-fluid
+
+	//- Template for the editor words
+	script#words-list(type="text/template")
+		<% _.each(list, function(word){ %>
+		li
+			a(href="#") <%= word.get('text') %> (<%= word.get('count') %>)
+		<% }); %>
+
+	div.container-fluid.editor
 		div.row
 			div(class='col-sm-3 col-md-2 sidebar')
-				ul#words-text(class='nav nav-sidebar')
+				ul#editor-filter.nav.nav-sidebar
 					li
-						a(href='#') word
+						label Ignore words
+						input.form-control(type="text" id="ignore-words")
 
 		div(class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main')
 			h2.page-header Word editor
+			
 			h4 Insert here the text to work with
-
 			textarea#text-editor
 			#text-editor-info
-				ul
-					li Words: 
-						span -
-					li Paragraphs: 
-						span -
+				input#clear.btn.btn-primary(type="button" value="clear")
+				table
+					tbody
+						tr
+							td Total words
+							td
+								span#words-count 0
+						tr
+							td Unique words
+							td
+								span#unique-words-count 0
+						tr 
+							td Words > one letter
+							td
+								span#words-more-one-letter-count 0
+						tr
+							td Words > two letters
+							td
+								span#words-more-two-letters-count 0
+						tr
+							td Words > three letters&nbsp;&nbsp;
+							td
+								span#words-more-three-letters-count 0
+						tr
+							td Paragraphs
+							td
+								span#paragraph-count 0
+						
+			ul#words-text
 	
 	script(src='/js/libs/underscore-1.6.0.min.js')
 	script(src='/js/libs/backbone-1.0.0.min.js')
-	script(src='/js/models/editormodel.js')
-	script(src='/js/views/editorview.js')
-	script(src='/js/views/editorwordlist.js')
+	script(src='/js/models/editor/word.js')
+	script(src='/js/models/editor/editormodel.js')
+	script(src='/js/views/editor/wordlist.js')
+	script(src='/js/views/editor/filter.js')
+	script(src='/js/views/editor/editorview.js')
 	script(src='/js/editor.js')
 				
