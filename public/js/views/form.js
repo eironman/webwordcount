@@ -49,8 +49,6 @@ $(function(){
 			// If the request has already been done use the data in the model
 			if ( typeof url !== "undefined" ) {
 				
-				// TODO: Mark url as active
-				
 				// Find the model in the collection
 				var model = this.collection.get(url.modelCid);
 				this.options.result.model = model;

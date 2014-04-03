@@ -10,8 +10,8 @@
 	background-color: #428BCA;
     color: #FFFFFF;
 }
-#form-count label{
-	color: #999;
+.form-count-container{
+	margin-bottom: 25px;
 }
 .form-group input{
 	margin-right: 5px;
@@ -50,4 +50,47 @@ h2 .action{
 .suggestion{
 	text-align: right;
 	font-size: 12px;
+}
+
+/* Editor */
+#editor-container{
+	display: none;
+}
+#text-editor{
+	width: 70%;
+	height: 300px;
+	float: left;
+	margin-bottom: 25px;
+	border: 1px solid #000;
+	overflow: hidden;
+	overflow-y: scroll;
+}
+#text-editor-info{
+	width: 30%;
+	float: left;
+	padding-left: 10px;
+}
+#text-editor-info ul{
+	padding: 0;
+}
+#text-editor-info li{
+	list-style: none;
+}
+#words-text{
+	clear: left;
+	padding: 0;
+	list-style: none;
+}
+#words-text li{
+	display: inline-block;
+	margin: 0 10px 10px 0;
+}
+#editor-filter li{	
+	padding-left: 20px;
+}
+#editor-filter li a{
+	padding: 0px;
+}
+#clear{
+	margin-bottom: 10px;
 }

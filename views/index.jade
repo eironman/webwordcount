@@ -2,30 +2,32 @@ extends layout
 
 block content
 
-	//- Template for the list of urls
-	script#url-list(type="text/template")
-		<% _.each(list, function(obj){ if (obj.active) {  %>
-		li.active
-			a(href="#") <%= obj.url %>
-		<% } else { %>
-		li
-			a(href="#") <%= obj.url %>
-		<% }}); %>
-		
-	//- Template for the list of words
-	script#word-list(type="text/template")
-		<% _.each(list, function(word){  %>
-		tr
-			td <%= word.w %>
-			td <%= word.c %>
-			td <%= word.text %>
-			td <%= word.ptitle %>
-			td <%= word.desc %>
-			td <%= word.keyw %>
-			td <%= word.heading %>
-		<% }); %>
-
-	div.container-fluid
+	//- WORD COUNT WEB
+	div#web-count-container.container-fluid
+	
+		//- Template for the list of urls
+		script#url-list(type="text/template")
+			<% _.each(list, function(obj){ if (obj.active) {  %>
+			li.active
+				a(href="#") <%= obj.url %>
+			<% } else { %>
+			li
+				a(href="#") <%= obj.url %>
+			<% }}); %>
+			
+		//- Template for the web words
+		script#word-list(type="text/template")
+			<% _.each(list, function(word){  %>
+			tr
+				td <%= word.w %>
+				td <%= word.c %>
+				td <%= word.text %>
+				td <%= word.ptitle %>
+				td <%= word.desc %>
+				td <%= word.keyw %>
+				td <%= word.heading %>
+			<% }); %>
+			
 		div.row
 			div(class='col-sm-3 col-md-2 sidebar')
 				ul#urls-requested(class='nav nav-sidebar')
@@ -35,6 +37,28 @@ block content
 						img#loading(src='/img/loading.gif')
 						
 		div(class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main')
+			div.form-count-container.pull-left
+				form#form-count(method='post', action='/', class='pull-left')
+					.form-group
+						input(type='text' class='form-control' placeholder='www.website.com' id='url')
+						input(type='submit' value='Count' class='btn btn-default')
+						img.loading.hidden(src='/img/loading.gif' alt='loading')
+				
+				ul(class='nav pull-left')
+					li.dropdown
+						a.dropdown-toggle(data-toggle='dropdown' role='button' href='javascript:void(0)') 
+							span Words > 2 letters 
+							b.caret
+						ul.dropdown-menu(role='menu')
+							li(role='presentation' id='no-filter')
+								a(href='javascript:void(0)' tabindex='-1' role='menuitem') Do not filter 
+							li(role='presentation' id='filter-one')
+								a(href='javascript:void(0)' tabindex='-1' role='menuitem') Words > 1 letter 
+							li(role='presentation' class='disabled' id='filter-two')
+								a(href='javascript:void(0)' tabindex='-1' role='menuitem') Words > 2 letters 
+							li(role='presentation' id='filter-three')
+								a(href='javascript:void(0)' tabindex='-1' role='menuitem') Words > 3 letters
+							
 			h2.page-header Word count: 
 				span 0
 				.action
@@ -78,8 +102,70 @@ block content
 					a(href="https://github.com/eironman/webwordcount") github
 				p 
 					script writeMail("aaron.amengual", "gmail.com")
-				
-				
+		
+	//- WORD COUNT EDITOR
+	div#editor-container.container-fluid
+	
+		//- Template for the editor words
+		script#words-list(type="text/template")
+			<% _.each(list, function(word){ %>
+			li
+				a(href="#") <%= word.get('text') %> (<%= word.get('count') %>)
+			<% }); %>
+		
+		div.row
+			div(class='col-sm-3 col-md-2 sidebar')
+				ul#editor-filter.nav.nav-sidebar
+					li
+						label Ignore words
+						input.form-control(type="text" id="ignore-words")
+
+		div(class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main')
+			h2.page-header Word editor
+			
+			h4 Insert here the text to work with
+			textarea#text-editor
+			#text-editor-info
+				input#clear.btn.btn-primary(type="button" value="clear")
+				table
+					tbody
+						tr
+							td Total words
+							td
+								span#words-count 0
+						tr
+							td Unique words
+							td
+								span#unique-words-count 0
+						tr 
+							td Words > one letter
+							td
+								span#words-more-one-letter-count 0
+						tr
+							td Words > two letters
+							td
+								span#words-more-two-letters-count 0
+						tr
+							td Words > three letters&nbsp;&nbsp;
+							td
+								span#words-more-three-letters-count 0
+						tr
+							td Paragraphs
+							td
+								span#paragraph-count 0
+						
+			ul#words-text
+		
+			
+		script(src='/js/libs/sorttable.js')
+		script(src='/js/libs/underscore-1.6.0.min.js')
+		script(src='/js/libs/backbone-1.0.0.min.js')
+		script(src='/js/models/request.js')
+		script(src='/js/views/result.js')
+		script(src='/js/views/reset.js')
+		script(src='/js/views/urlsrequested.js')
+		script(src='/js/views/form.js')
+		script(src='/js/index.js')
 				
 				
 				

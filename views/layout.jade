@@ -15,6 +15,7 @@ html
 		link(rel='stylesheet', href='/css/style.css')
 		
 		script(src='/js/libs/jquery-1.11.0.min.js')
+		script(src='/js/libs/bootstrap.min.js')
 		script(type="text/javascript").
 			function writeMail( nom, dom, etiqueta){
 				if ( !etiqueta ){
@@ -22,6 +23,15 @@ html
 				}
 				document.write( '<a hr'+'ef="mai'+'lto:'+nom+'@'+dom+'">'+etiqueta+'</a>' );
 			}
+			$(function(){
+				// Length filter
+				$('ul.dropdown-menu > li').on('click', function(){
+					$('ul.dropdown-menu > li.disabled').removeClass('disabled');
+					$(this).addClass('disabled');
+					$('li.dropdown > a > span').html($(this).children('a').html());
+					if ( $("#url").val() != '' ) $("#form-count").submit();
+				})
+			})
 		
 		// HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
 		<!--[if lt IE 9]>
@@ -29,14 +39,6 @@ html
 		script(src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js')
 		<![endif]-->
 		
-		script(type="text/javascript").
-			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-			
-			ga('create', 'UA-45884912-3', 'wherearemywords.com');
-			ga('send', 'pageview');
 		
 	body
 		div(class='navbar navbar-inverse navbar-fixed-top' role='navigation')
@@ -52,37 +54,11 @@ html
 						a.navbar-brand(href='/') Where Are My Words
 					
 				div(class='navbar-collapse collapse')
-					form(method='post', action='/', id='form-count', class='navbar-form navbar-left')
-						.form-group
-							label(for='url') http://&nbsp;
-							input(type='text' class='form-control' placeholder='www.website.com' id='url')
-							input(type='submit' value='Count' class='btn btn-default')
-							img.loading.hidden(src='/img/loading.gif' alt='loading')
-					
 					ul(class='nav navbar-nav')
-						li.dropdown
-							a.dropdown-toggle(data-toggle='dropdown' role='button' href='javascript:void(0)') 
-								span Words > 2 letters 
-								b.caret
-							ul.dropdown-menu(role='menu')
-								li(role='presentation' id='no-filter')
-									a(href='javascript:void(0)' tabindex='-1' role='menuitem') Do not filter 
-								li(role='presentation' id='filter-one')
-									a(href='javascript:void(0)' tabindex='-1' role='menuitem') Words > 1 letter 
-								li(role='presentation' class='disabled' id='filter-two')
-									a(href='javascript:void(0)' tabindex='-1' role='menuitem') Words > 2 letters 
-								li(role='presentation' id='filter-three')
-									a(href='javascript:void(0)' tabindex='-1' role='menuitem') Words > 3 letters 
+						li
+							a(href="/") Count words url
+						li
+							a(href="/word-counter-online") Count words text
 						
 		block content
 
-		script(src='/js/libs/sorttable.js')
-		script(src='/js/libs/bootstrap.min.js')
-		script(src='/js/libs/underscore-1.6.0.min.js')
-		script(src='/js/libs/backbone-1.0.0.min.js')
-		script(src='/js/models/request.js')
-		script(src='/js/views/result.js')
-		script(src='/js/views/reset.js')
-		script(src='/js/views/urlsrequested.js')
-		script(src='/js/views/form.js')
-		script(src='/js/main.js')
