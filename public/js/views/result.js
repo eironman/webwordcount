@@ -11,12 +11,15 @@ $(function(){
 		// Renders the list of words
 		render: function(){
 			
+			// Remove url from input
+			$("#url").val('');
 			$(".loading").addClass('hidden');
 			
 			// Only render if the model has fetched the data
 			if ( !this.model.get('fetched') ){
 				return;
 			}
+			
 			
 			var count=0, lengthFilter=0, filteredWords=[];
 			
@@ -47,8 +50,7 @@ $(function(){
 			});
 			
 			// Html list template
-			var params = {list: filteredWords};
-			var template = _.template($('#word-list').html(), params);
+			var template = _.template($('#word-list').html(), {list: filteredWords});
 			
 			// Show result
             this.$el.html(template);

@@ -15,6 +15,19 @@ $(function(){
 			urls		: new UrlsRequestedView(),
 		},
 		
+		initialize: function(){
+			
+			var self = this;
+			
+			// Length filter
+			$('ul.dropdown-menu > li').on('click', function(){
+				$('ul.dropdown-menu > li.disabled').removeClass('disabled');
+				$(this).addClass('disabled');
+				$('li.dropdown > a > span').html($(this).children('a').html());
+				self.applyLengthFilter();
+			})
+		},
+		
 		events: {
 			'submit' : 'validate'
 		},
@@ -72,10 +85,21 @@ $(function(){
 			result.model = request;
 			
 			// When request is finished, render the result
-			result.listenTo(result.model, "change:fetched", result.render);
+			result.listenToOnce(result.model, "change:fetched", result.render);
 			
 			// Do the request
 			request.doRequest();
+		},
+		
+		// Applies length filter to the active request
+		applyLengthFilter: function(){
+			
+			var active = _(this.options.urls.list).find(function(request){
+				return request.active;
+			});
+			if (active != 'undefined') {
+				this.submit(active.url);
+			}
 		}
 	});
 });

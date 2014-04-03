@@ -1,5 +1,7 @@
 $(function(){
 	
+	form = new FormView();
+	
 	// Focus the textbox
 	$("#url").focus();
 	
@@ -27,6 +29,4 @@ $(function(){
 		var encodedUri = encodeURI(data);
 		window.open(encodedUri);
 	})
-	
-	var form = new FormView();
 });

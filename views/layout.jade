@@ -23,15 +23,6 @@ html
 				}
 				document.write( '<a hr'+'ef="mai'+'lto:'+nom+'@'+dom+'">'+etiqueta+'</a>' );
 			}
-			$(function(){
-				// Length filter
-				$('ul.dropdown-menu > li').on('click', function(){
-					$('ul.dropdown-menu > li.disabled').removeClass('disabled');
-					$(this).addClass('disabled');
-					$('li.dropdown > a > span').html($(this).children('a').html());
-					if ( $("#url").val() != '' ) $("#form-count").submit();
-				})
-			})
 		
 		// HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries
 		<!--[if lt IE 9]>

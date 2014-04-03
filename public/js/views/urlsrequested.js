@@ -23,10 +23,9 @@ $(function(){
 			var url = $(e.currentTarget).html();
 			this.setActive(url)
 
-			// Set the url in the form and submit it
-			$("#url").val(url);
-			$("#form-count").submit();
-;		},
+			// Show the result
+			form.submit(url);
+		},
 		
 		// Sets a url as active and renders the list
 		setActive: function(url){
@@ -63,6 +62,10 @@ $(function(){
 			});
 			
 			this.render();
+		},
+		
+		// Shows the word count of a request once fetched
+		updateUrlCount: function(url, count){
 		},
 		
 		// Renders urls
