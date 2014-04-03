@@ -12,14 +12,13 @@ $(function(){
 		render: function(){
 			
 			// Remove url from input
-			$("#url").val('');
+			$("#url").val('').focus();
 			$(".loading").addClass('hidden');
 			
 			// Only render if the model has fetched the data
 			if ( !this.model.get('fetched') ){
 				return;
 			}
-			
 			
 			var count=0, lengthFilter=0, filteredWords=[];
 			
@@ -59,6 +58,30 @@ $(function(){
 			// By default is sorted by total count
 			$("#result th").removeClass('sorttable_sorted sorttable_sorted_reverse');
 			$("#result th.total").addClass('sorttable_sorted_reverse');
+		},
+		
+		exportToCSV: function(){
+			
+			var data = 'data:text/csv;charset=utf-8,';
+			var words = [];
+			
+			// Headings
+			$("#result th").each(function(){
+				words.push($(this).html().replace(" ", "_"));
+			});
+			data += words.join(",") + "\n";
+			
+			// Words
+			$("#result tr").each(function(){
+				words = [];
+				$(this).children("td").each(function(){
+					words.push($(this).html());				
+				});
+				data += words.join(",") + "\n";
+			});
+			
+			var encodedUri = encodeURI(data);
+			window.open(encodedUri);
 		}
 	});
 });

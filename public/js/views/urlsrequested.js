@@ -66,6 +66,7 @@ $(function(){
 		
 		// Shows the word count of a request once fetched
 		updateUrlCount: function(url, count){
+			
 		},
 		
 		// Renders urls

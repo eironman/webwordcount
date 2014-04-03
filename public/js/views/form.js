@@ -100,6 +100,10 @@ $(function(){
 			if (active != 'undefined') {
 				this.submit(active.url);
 			}
+		},
+		
+		exportResult: function(){
+			this.options.result.exportToCSV();
 		}
 	});
 });
