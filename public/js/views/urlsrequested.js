@@ -16,7 +16,7 @@ $(function(){
 			e.preventDefault();
 			
 			// Url selected
-			var url = $(e.currentTarget).html();
+			var url = $(e.currentTarget).children('span').html();
 
 			// Show the result
 			form.submit(url);
@@ -24,7 +24,10 @@ $(function(){
 		
 		// Renders urls
 		render: function(){
-			var template = _.template($('#url-list').html(), {list: this.collection.models});
+			var template = _.template($('#url-list').html(), {
+									list	: this.collection.models, 
+									length	: form.getLengthFilter()
+							});
 			this.$el.html(template);
 		}
 	});

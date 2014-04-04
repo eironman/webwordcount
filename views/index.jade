@@ -7,12 +7,19 @@ block content
 	
 		//- Template for the list of urls
 		script#url-list(type="text/template")
-			<% _.each(list, function(req){ if (req.get('selected')) {  %>
+			<% _.each(list, function(req){  %>
+			<% 	if (length==0) count = req.get('words').length;  %>
+			<% 	if (length==1) count = req.get('moreonechar');  %>
+			<% 	if (length==2) count = req.get('moretwochar');  %>
+			<% 	if (length==3) count = req.get('morethreechar');  %>
+			<% 	if (req.get('selected')) {  %>
 			li.active
-				a(href="#") <%= req.get('requestedUrl') %>
+				a(href="#")
+					<span><%= req.get('requestedUrl') %></span> (<%= count %>)
 			<% } else { %>
 			li
-				a(href="#") <%= req.get('requestedUrl') %>
+				a(href="#")
+					<span><%= req.get('requestedUrl') %></span> (<%= count %>)
 			<% }}); %>
 			
 		//- Template for the web words

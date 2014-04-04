@@ -6,11 +6,14 @@ $(function(){
 	Request = Backbone.Model.extend({
 		
 		defaults: {
-			words		: [],
-			paths		: [],
-			requestedUrl: '',
-			fetched		: false, 	// Indicates if the data has been fetched
-			selected	: false		// Indicates if its selected in the list
+			words			: [],
+			moreonechar		: 0,
+			moretwochar		: 0,
+			morethreechar	: 0,
+			paths			: [],
+			requestedUrl	: '',
+			fetched			: false, 	// Indicates if the data has been fetched
+			selected		: false		// Indicates if its selected in the list
 		},
 
 		doRequest: function(){
@@ -28,9 +31,12 @@ $(function(){
 			}).done(function(data){
 				
 				self.set({
-					words	: data.words,
-					paths	: data.paths,
-					fetched	: true
+					words			: data.words,
+					moreonechar		: data.moreonechar,
+					moretwochar		: data.moretwochar,
+					morethreechar	: data.morethreechar,
+					paths			: data.paths,
+					fetched			: true
 				});
 				
 			}).error(function(e){

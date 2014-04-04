@@ -20,22 +20,13 @@ $(function(){
 				return;
 			}
 			
-			var count=0, lengthFilter=0, filteredWords=[];
+			var count=0, filteredWords=[];
 			
 			// Words list
 			var words = this.model.get('words');
 			
 			// Length filter
-			var filter = $('ul.dropdown-menu > li.disabled').attr('id');
-			if (filter == 'no-filter') {
-				lengthFilter = 0;
-			} else if (filter == 'filter-one'){
-				lengthFilter = 1;
-			} else if (filter == 'filter-two'){
-				lengthFilter = 2;
-			} else if (filter == 'filter-three'){
-				lengthFilter = 3;
-			}
+			var lengthFilter = form.getLengthFilter();
 			
 			// Apply filter to list
 			_.each(words, function(word){

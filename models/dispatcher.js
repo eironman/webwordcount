@@ -6,7 +6,7 @@
  * @param res
  */
 function index(req, res, err){
-	res.render('index', {title: 'Count words appearances in a web | wherearemywords.com'});
+	res.render('index', {title: 'Count and compare words appearances in a web | wherearemywords.com'});
 }
 
 /**
@@ -17,7 +17,7 @@ function index(req, res, err){
 function count(req, res, err){
 	
 	// List of words and paths. Global variable
-	list = {'words':[], 'paths':[]};
+	list = {'words':[], 'paths':[], 'moreonechar':0, 'moretwochar':0, 'morethreechar':0};
 	var request = require('request');
 	
 	// Get url, add http if needed
@@ -271,6 +271,18 @@ function updatecount(data, type){
 				h5		: type == 'h5' ? 1 : 0,
 				h6		: type == 'h6' ? 1 : 0
 			});
+			
+			// Update lengths
+			if (word.length > 3) {
+				list.moreonechar++;
+				list.moretwochar++;
+				list.morethreechar++;
+			} else if (word.length == 3) {
+				list.moreonechar++;
+				list.moretwochar++;
+			} else if (word.length == 2) {
+				list.moreonechar++;
+			}
 			
 		} else {
 			

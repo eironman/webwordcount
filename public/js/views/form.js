@@ -14,6 +14,7 @@ $(function(){
 			result		: new ResultView(),
 			reset		: new ResetView(),
 			urls		: new UrlsRequestedView(),
+			lengthFilter: 2
 		},
 		
 		initialize: function(){
@@ -23,7 +24,7 @@ $(function(){
 			urlList.collection = this.collection;
 			
 			// Render list when a request model is added to the collection
-			urlList.listenTo(this.collection, "add", urlList.render);
+			//urlList.listenTo(this.collection, "add", urlList.render);
 			
 			var self = this;
 			
@@ -32,6 +33,7 @@ $(function(){
 				$('ul.dropdown-menu > li.disabled').removeClass('disabled');
 				$(this).addClass('disabled');
 				$('li.dropdown > a > span').html($(this).children('a').html());
+				self.setLengthFilter();
 				self.applyLengthFilter();
 			});
 		},
@@ -88,7 +90,7 @@ $(function(){
 			
 			// When request is finished, render the result
 			result.listenToOnce(result.model, "change:fetched", result.render);
-			//result.listenToOnce(request, "change:fetched", this.options.urls.render);
+			this.options.urls.listenToOnce(request, "change:fetched", this.options.urls.render);
 			
 			// Do the request
 			request.doRequest();
@@ -101,6 +103,21 @@ $(function(){
 			});
 		},
 		
+		// Sets the length filter value
+		setLengthFilter: function(){
+			
+			var filter = $('ul.dropdown-menu > li.disabled').attr('id');
+			if (filter == 'no-filter') {
+				this.options.lengthFilter = 0;
+			} else if (filter == 'filter-one'){
+				this.options.lengthFilter = 1;
+			} else if (filter == 'filter-two'){
+				this.options.lengthFilter = 2;
+			} else if (filter == 'filter-three'){
+				this.options.lengthFilter = 3;
+			}
+		},
+		
 		// Applies length filter to the selected request
 		applyLengthFilter: function(){
 			
@@ -110,6 +127,11 @@ $(function(){
 			if (typeof selected !== 'undefined') {
 				this.submit(selected.get('requestedUrl'));
 			}
+		},
+		
+		// Returns the length filter value
+		getLengthFilter: function(){
+			return this.options.lengthFilter
 		},
 		
 		exportResult: function(){
