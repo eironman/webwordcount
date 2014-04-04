@@ -10,6 +10,7 @@ $(function(){
 			paths		: [],
 			requestedUrl: '',
 			fetched		: false, 	// When fetched is true, result view renders
+			selected	: false		// Indicates if its selected in the list
 		},
 
 		doRequest: function(){

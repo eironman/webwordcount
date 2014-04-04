@@ -7,12 +7,12 @@ block content
 	
 		//- Template for the list of urls
 		script#url-list(type="text/template")
-			<% _.each(list, function(obj){ if (obj.active) {  %>
+			<% _.each(list, function(req){ if (req.get('selected')) {  %>
 			li.active
-				a(href="#") <%= obj.url %>
+				a(href="#") <%= req.get('requestedUrl') %>
 			<% } else { %>
 			li
-				a(href="#") <%= obj.url %>
+				a(href="#") <%= req.get('requestedUrl') %>
 			<% }}); %>
 			
 		//- Template for the web words

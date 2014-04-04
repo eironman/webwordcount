@@ -8,14 +8,22 @@ $(function(){
 		// Form element
 		el: '#form-count',
 		
+		collection	: new RequestCollection(), // Collection of models request
+		
 		options: {
-			collection	: new RequestCollection(), // Collection of models request
 			result		: new ResultView(),
 			reset		: new ResetView(),
 			urls		: new UrlsRequestedView(),
 		},
 		
 		initialize: function(){
+			
+			// Sets the collection for the urls requested list
+			var urlList = this.options.urls;
+			urlList.collection = this.collection;
+			
+			// Render list when a request model is added to the collection
+			urlList.listenTo(this.collection, "add", urlList.render);
 			
 			var self = this;
 			
@@ -25,7 +33,7 @@ $(function(){
 				$(this).addClass('disabled');
 				$('li.dropdown > a > span').html($(this).children('a').html());
 				self.applyLengthFilter();
-			})
+			});
 		},
 		
 		events: {
@@ -51,34 +59,31 @@ $(function(){
 		// Does the action
 		submit: function(requestedUrl){
 			
-			// Resets previous results
-			this.options.reset.render();
-			
 			// Check if the request has already been done
-			var url = _(this.options.urls.list).find(function(obj){
-				return obj.url == requestedUrl;
+			var request = _(this.collection.models).find(function(req){
+				return req.get('requestedUrl') == requestedUrl;
 			});
 			
+			// If the request is already selected don't do anything
+			if (typeof request !== "undefined" && request.get('selected')) return;
+			
+			// Resets previous results
+			this.options.reset.render();
+			this.deselectModels();
+			
 			// If the request has already been done use the data in the model
-			if ( typeof url !== "undefined" ) {
+			if ( typeof request !== "undefined" ){
 				
-				// Find the model in the collection
-				var model = this.collection.get(url.modelCid);
-				this.options.result.model = model;
+				// Render the result of the request
+				this.options.result.model = request.set('selected', true);
 				this.options.result.render();
+				this.options.urls.render();
 				return;
 			}
 			
 			// Create the model and add it to the collection
-			var request = new Request({'requestedUrl': requestedUrl});
+			var request = new Request({'requestedUrl': requestedUrl, 'selected': true});
 			this.collection.add(request);
-			
-			// Adds url to the list
-			this.options.urls.addUrl({
-				url		: requestedUrl,
-				modelCid: request.cid,
-				active	: true
-			});
 			
 			// Sets the model to the result view
 			var result = this.options.result;
@@ -91,14 +96,21 @@ $(function(){
 			request.doRequest();
 		},
 		
-		// Applies length filter to the active request
+		// Sets selected to false for the models in the collection
+		deselectModels: function(){
+			_(this.collection.models).each(function(req){
+				req.set('selected', false);
+			});
+		},
+		
+		// Applies length filter to the selected request
 		applyLengthFilter: function(){
 			
-			var active = _(this.options.urls.list).find(function(request){
-				return request.active;
+			var selected = _(this.options.urls.list).find(function(request){
+				return request.selected;
 			});
-			if (active != 'undefined') {
-				this.submit(active.url);
+			if (selected != 'undefined') {
+				this.submit(selected.url);
 			}
 		},
 		

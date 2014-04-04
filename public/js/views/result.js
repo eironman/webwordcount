@@ -37,9 +37,6 @@ $(function(){
 				lengthFilter = 3;
 			}
 			
-			// Empty table
-			$("#result tbody").html('');
-			
 			// Apply filter to list
 			_.each(words, function(word){
 				if (word.w.length > lengthFilter) {
@@ -50,10 +47,11 @@ $(function(){
 			
 			// Html list template
 			var template = _.template($('#word-list').html(), {list: filteredWords});
-			
+
 			// Show result
             this.$el.html(template);
 			$('.page-header > span').html(count);
+			//form.options.urls.updateUrlCount(this.model.get('requestedUrl'), words.length);
 			
 			// By default is sorted by total count
 			$("#result th").removeClass('sorttable_sorted sorttable_sorted_reverse');
