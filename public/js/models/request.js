@@ -9,7 +9,7 @@ $(function(){
 			words		: [],
 			paths		: [],
 			requestedUrl: '',
-			fetched		: false, 	// When fetched is true, result view renders
+			fetched		: false, 	// Indicates if the data has been fetched
 			selected	: false		// Indicates if its selected in the list
 		},
 

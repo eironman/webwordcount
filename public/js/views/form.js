@@ -59,17 +59,14 @@ $(function(){
 		// Does the action
 		submit: function(requestedUrl){
 			
+			// Resets previous results
+			this.options.reset.render();
+			this.deselectModels();
+
 			// Check if the request has already been done
 			var request = _(this.collection.models).find(function(req){
 				return req.get('requestedUrl') == requestedUrl;
 			});
-			
-			// If the request is already selected don't do anything
-			if (typeof request !== "undefined" && request.get('selected')) return;
-			
-			// Resets previous results
-			this.options.reset.render();
-			this.deselectModels();
 			
 			// If the request has already been done use the data in the model
 			if ( typeof request !== "undefined" ){
@@ -91,6 +88,7 @@ $(function(){
 			
 			// When request is finished, render the result
 			result.listenToOnce(result.model, "change:fetched", result.render);
+			//result.listenToOnce(request, "change:fetched", this.options.urls.render);
 			
 			// Do the request
 			request.doRequest();
@@ -106,11 +104,11 @@ $(function(){
 		// Applies length filter to the selected request
 		applyLengthFilter: function(){
 			
-			var selected = _(this.options.urls.list).find(function(request){
-				return request.selected;
+			var selected = _(this.collection.models).find(function(request){
+				return request.get('selected');
 			});
-			if (selected != 'undefined') {
-				this.submit(selected.url);
+			if (typeof selected !== 'undefined') {
+				this.submit(selected.get('requestedUrl'));
 			}
 		},
 		
