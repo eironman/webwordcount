@@ -4,6 +4,7 @@ Webwordcount
 www.wherearemywords.com
 
 Application with SEO pourposes to count and sort words in a web.
+Now with a text editor to count words and find synonyms.
 
 Uses node.js, express.js, underscore.js, jade, bootstrap and backbone.js.
 
