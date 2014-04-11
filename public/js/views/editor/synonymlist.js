@@ -40,6 +40,11 @@ $(function(){
 			}
 		},
 		
+		reset: function(){
+			$("#synonyms .loading").addClass('hidden');
+			$("#synonyms .list").html('Click on a word to get synonyms');
+		},
+		
 		showLoading: function(){
 			$("#synonyms .list").hide();
 			$("#synonyms .loading").removeClass('hidden');

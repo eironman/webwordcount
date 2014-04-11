@@ -9,5 +9,6 @@ $(function(){
 	$("#clear").click(function(){
 		$("#text-editor").val('');
 		editor.parse();
+		editor.synonymlist.reset();
 	});
 });
