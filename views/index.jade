@@ -8,10 +8,10 @@ block content
 		//- Template for the list of urls
 		script#url-list(type="text/template")
 			<% _.each(list, function(req){  %>
-			<% 	if (length==0) count = req.get('words').length;  %>
-			<% 	if (length==1) count = req.get('moreonechar');  %>
-			<% 	if (length==2) count = req.get('moretwochar');  %>
-			<% 	if (length==3) count = req.get('morethreechar');  %>
+			<% 	if (length==0) { count = req.get('words').length } else  %>
+			<% 	if (length==1) { count = req.get('moreonechar') } else %>
+			<% 	if (length==2) { count = req.get('moretwochar') } else %>
+			<% 	if (length==3) { count = req.get('morethreechar') } %>
 			<% 	if (req.get('selected')) {  %>
 			li.active
 				a(href="#")

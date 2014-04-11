@@ -7,17 +7,6 @@ $(function(){
 		
 		el: '#words-text',
 		
-		events: {
-			'click a' : 'synonims'
-		},
-		
-		// Shows the synonims of a word
-		synonims: function(e){
-			e.preventDefault();
-			
-			alert('Synonims');
-;		},
-		
 		// Renders words
 		render: function(){
 			var template = _.template($('#words-list').html(),

@@ -6,7 +6,10 @@ block content
 	script#words-list(type="text/template")
 		<% _.each(list, function(word){ %>
 		li
-			a(href="#") <%= word.get('text') %> (<%= word.get('count') %>)
+			a(href="#") 
+				span 
+					<%= word.get('text') %>
+				|&nbsp;(<%= word.get('count') %>)
 		<% }); %>
 
 	div.container-fluid.editor
@@ -50,7 +53,15 @@ block content
 							td Paragraphs
 							td
 								span#paragraph-count 0
-						
+				
+			.clear
+					
+			h4#synonyms 
+				span.list Click on a word to get synonyms
+				span.loading.hidden
+					img(src='/img/loading.gif' alt='loading') 
+					|&nbsp; Fetching synonyms...
+				
 			ul#words-text
 	
 	script(src='/js/libs/underscore-1.6.0.min.js')
@@ -58,6 +69,7 @@ block content
 	script(src='/js/models/editor/word.js')
 	script(src='/js/models/editor/editormodel.js')
 	script(src='/js/views/editor/wordlist.js')
+	script(src='/js/views/editor/synonymlist.js')
 	script(src='/js/views/editor/filter.js')
 	script(src='/js/views/editor/editorview.js')
 	script(src='/js/editor.js')

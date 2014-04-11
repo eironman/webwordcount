@@ -6,7 +6,9 @@
  * @param res
  */
 function index(req, res, err){
-	res.render('index', {title: 'Count and compare words appearances in a web | wherearemywords.com'});
+	res.render('index', 
+				{title: 'Count and compare words appearances in a web | wherearemywords.com',
+				description: 'Count words appearances in a web, compare quantity, sorted by title, description, keywords and more.'});
 }
 
 /**
@@ -58,7 +60,39 @@ function count(req, res, err){
  * Online editor to count words and check its frequency
  */
 function editor(req, res, err){
-	res.render('editor', {title: 'Count words in a text | wherearemywords.com'});
+	res.render('editor', 
+				{title: 'Count words in a text, find synonyms | wherearemywords.com',
+				description: 'Count words, lengths and paragraphs in a text, find synonyms and exclude words'});
+}
+
+/**
+ * Fetches synonyms for a word
+ */
+function synonyms(req, res, err){
+	
+	// Build url
+	var url = 'http://synonym.com/synonyms/' + req.params[0];
+	
+	// Do the request
+	var request = require('request');
+	request(url, function(error, response, body) {
+		
+		if (!error && response.statusCode == 200) {
+			
+			var synonyms = extractSynonyms(body.toString());
+			
+			// Success
+			console.log('[OK] Request to: ' + url);
+			res.json(synonyms);
+			
+		} else{
+			
+			// Error
+			console.log('[ERROR] Request to: ' + url);
+			res.status(404).json({"message" : "There was an error retrieving the synonyms"});
+		}
+	});
+	
 }
 
 /**
@@ -75,6 +109,7 @@ function badrequest(req, res, next){
 exports.index = index;
 exports.count = count;
 exports.editor = editor;
+exports.synonyms = synonyms
 exports.badrequest = badrequest;
 
 // UTILS
@@ -322,6 +357,21 @@ function updatecount(data, type){
 			}
 		}
 	});
+}
+
+/**
+ * Extracts the synonyms
+ * @param data
+ */
+function extractSynonyms(data){
+	
+	regexp = /<span class="equals">([\s\S]+?)<\/span>/g;
+	var synonyms = [];
+	while ( (arr = regexp.exec(data)) !== null ){
+		arr[1] = arr[1].split(', ');
+		synonyms = synonyms.concat(arr[1]);
+	}
+	return synonyms;
 }
 
 

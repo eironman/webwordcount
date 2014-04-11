@@ -42,7 +42,6 @@ $(function(){
 			// Show result
             this.$el.html(template);
 			$('.page-header > span').html(count);
-			//form.options.urls.updateUrlCount(this.model.get('requestedUrl'), words.length);
 			
 			// By default is sorted by total count
 			$("#result th").removeClass('sorttable_sorted sorttable_sorted_reverse');

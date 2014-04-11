@@ -8,7 +8,7 @@ $(function(){
 		el: '#text-editor',
 		
 		wordlist: new WordListView(),
-		
+		synonymlist: new SynonymListView(),
 		filter: new EditorFilterView(),
 		
 		events:{
@@ -20,6 +20,7 @@ $(function(){
 		parse: function(){
 			this.model.parse(this.$el.val());
 			this.wordlist.model = this.model;
+			this.synonymlist.model = this.model;
 			this.render();
 		},
 		
